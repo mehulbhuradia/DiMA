@@ -1,1 +1,3 @@
-128 to 254
+128 to 254 res len
+bfloat doesnt work on compute<8
+bfloat has same precision as f32 but i use f16 for speed
