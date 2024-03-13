@@ -32,7 +32,7 @@ def create_config():
     refresh.prefix = ""
 
     validation = config.validation = ml_collections.ConfigDict()
-    validation.batch_size = 128
+    validation.batch_size = training.batch_size
     validation.validation_iters = int(10_000 / validation.batch_size)
     validation.num_gen_texts = 2048
 
