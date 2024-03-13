@@ -1,4 +1,5 @@
 
+print(torch.__version__)
 import logging
 import os
 import json
