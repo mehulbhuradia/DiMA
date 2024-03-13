@@ -5,7 +5,12 @@ conda install conda-forge::tqdm=4.65.0
 conda install typing=3.7.4.3
 conda install wandb=0.15.0 --channel conda-forge
 conda install conda-forge::biopython=1.81
+
+########### takes forever on server
 conda install conda-forge::biotite=0.37.0
+########### takes forever
+pip install biotite==0.37.0 --user
+
 conda install conda-forge::sentencepiece=0.1.99
 conda install conda-forge::timm=0.9.2
 conda install -c conda-forge seaborn=0.12.2

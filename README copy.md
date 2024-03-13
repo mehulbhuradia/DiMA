@@ -14,6 +14,8 @@ scp -r af_structures daic:/tudelft.net/staff-umbrella/Enzymix/se3_diffusion/
 
 scp -r uniprot_sprot.fasta daic:/tudelft.net/staff-umbrella/Mehul/Enzymix/
 
+scp -r data daic:/tudelft.net/staff-umbrella/Mehul/DiMA/
+
 
 #setup
 module use /opt/insy/modulefiles
