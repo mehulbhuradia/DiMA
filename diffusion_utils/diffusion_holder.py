@@ -466,7 +466,6 @@ class DiffusionRunner:
         torch.save(
             {   
                 "model": self.score_estimator.state_dict(),
-                "decoder": self.encoder_decoder.state_dict(),
                 "ema": self.ema.state_dict(),
                 "optimizer": self.optimizer.state_dict(),
                 "scheduler": self.scheduler.state_dict(),
