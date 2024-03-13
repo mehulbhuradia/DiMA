@@ -16,4 +16,4 @@ conda activate /tudelft.net/staff-umbrella/Mehul/DiMA/dima
 
 export TMPDIR=./tmp/
 
-srun python  train_diffusion.py
+srun python train_diffusion.py

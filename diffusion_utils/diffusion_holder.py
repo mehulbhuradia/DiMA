@@ -39,10 +39,12 @@ class DiffusionRunner:
 
         self.checkpoints_folder = config.training.checkpoints_folder
 
+        print("Loading normalizer.")
         self.enc_normalizer = EncNormalizer(
             enc_mean_path=self.config.data.enc_mean,
             enc_std_path=self.config.data.enc_std,
         ).cuda()
+        print("Loading encoder-decoder.")
         self.encoder_decoder = ESM2EncoderModel(
             config.model.hg_name,
             device=self.config.device,
@@ -55,6 +57,7 @@ class DiffusionRunner:
         self.scheduler = None
         self.step = 0
 
+        print("Loading score estimator.")
         self.score_estimator = ScoreEstimatorEMB(
             input_size=self.config.model.hidden_size,
             config=config.bert_config
@@ -345,10 +348,15 @@ class DiffusionRunner:
             experiment_name: str = 'bert_emb'
     ) -> None:
         self.step = 0
+        print("Loading optimizer.")
         self.set_optimizer()
+        print("Loading scheduler.")
         self.set_scheduler()
+        print("Loading grad scaler.")
         self.set_grad_scaler()
+        print("Loading train data generator.")
         self.set_valid_data_generator()
+        print("Loading ema.")
         self.ema = ExponentialMovingAverage(self.score_estimator.parameters(), self.config.model.ema_rate)
 
         if self.config.refresh.true:
