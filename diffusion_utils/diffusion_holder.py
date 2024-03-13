@@ -340,8 +340,6 @@ class DiffusionRunner:
 
     def train(
             self,
-            project_name: str = 'bert_diffusion',
-            experiment_name: str = 'bert_emb'
     ) -> None:
         self.step = 0
         self.set_optimizer()

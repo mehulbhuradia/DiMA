@@ -3,9 +3,11 @@ import torch
 from diffusion_utils.diffusion_holder import DiffusionRunner
 from utils.util import set_seed
 from config import create_config
+import time
 
 if __name__ == '__main__':
     config = create_config()
+    config.training.checkpoints_folder = './checkpoints/'+ str(time.time()) + '/'
     config.checkpoints_prefix = "DiMA-AFDB"
     config.training.batch_size_per_gpu = config.training.batch_size 
     config.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -21,7 +23,4 @@ if __name__ == '__main__':
     seed = config.seed
     set_seed(seed)
     
-    diffusion.train(
-        project_name=config.project_name,
-        experiment_name=config.checkpoints_prefix
-    )
+    diffusion.train()

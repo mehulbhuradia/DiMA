@@ -9,3 +9,5 @@ bfloat has same precision as f32 but i use f16 for speed
 9767566 -a40 -256
 
 128 is more reliable?
+
+bfloat works on a40

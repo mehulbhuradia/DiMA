@@ -16,7 +16,7 @@ def create_config():
 
     training = config.training = ml_collections.ConfigDict()
     training.training_iters = 1_000_000
-    training.checkpoint_freq = 50_000
+    training.checkpoint_freq = 5
     training.eval_freq = 50_000
     training.batch_size = 128
 
@@ -63,7 +63,7 @@ def create_config():
     data.enc_mean = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
     data.enc_std = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
     
-    config.decoder_path = f"./checkpoints/decoder-{config.model.hg_name_hash}-{config.data.dataset}--3000.pth"
+    config.decoder_path = f"./checkpoints/decoder-{config.model.hg_name_hash}-{config.data.dataset}--84000.pth"
     config.seed = 0
     config.ddp = False
     config.use_self_cond = True
