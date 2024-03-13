@@ -4,27 +4,30 @@ import torch
 import wandb
 import numpy as np
 from copy import deepcopy
-print(torch.__version__)
 from ml_collections import ConfigDict
 from random import random
 from typing import Optional, Union, Dict
 from tqdm import tqdm
 from tqdm.auto import trange
-print(torch.__version__)
 from torch.utils.data import DataLoader
 from torch.nn.functional import cross_entropy
 from torch.cuda.amp import GradScaler
-print(torch.__version__)
 from timm.scheduler.cosine_lr import CosineLRScheduler
 from typing import List, Dict, Union, Tuple
 
 print(torch.__version__)
 from model.score_estimator import ScoreEstimatorEMB
+print(torch.__version__)
 from model.ema_model import ExponentialMovingAverage
+print(torch.__version__)
 from diffusion_utils.diffusion_dynamic_sde import create_sde, create_solver
+print(torch.__version__)
 from encoders import EncNormalizer, ESM2EncoderModel
+print(torch.__version__)
 from utils import dict_to_cuda, reduce_tensor, masked_mean, masked_std, make_mask_wo_SEP_CLS, set_seed, gather_texts, load_fasta_file
+print(torch.__version__)
 from evaluation import calculate_fid_for_files
+print(torch.__version__)
 from diffusion_utils import LengthSampler
 print(torch.__version__)
 
