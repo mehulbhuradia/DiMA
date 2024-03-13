@@ -1,8 +1,11 @@
 import os
 import torch
+print(torch.__version__)
 from diffusion_utils.diffusion_holder import DiffusionRunner
 from utils.util import set_seed
 from config import create_config
+
+print("PyTorch version:", torch.__version__)
 
 if __name__ == '__main__':
     config = create_config()
