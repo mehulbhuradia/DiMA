@@ -401,6 +401,10 @@ class DiffusionRunner:
 
         stat_dict["grad_norm"], stat_dict["clipped_grad_norm"] = self.optimizer_step(loss_dict['total_loss'])
 
+        if not torch.isfinite(loss_dict['total_loss']):
+            print('NaN or Inf detected.')
+            raise KeyboardInterrupt()
+
         if self.step % 10 == 0:
             stat_dict["weight_norm"] = torch.sqrt(
                 sum([torch.sum(t.data ** 2) for t in self.score_estimator.parameters()]))

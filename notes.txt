@@ -4,4 +4,6 @@ bfloat has same precision as f32 but i use f16 for speed
 .plddt fromevaluation was causing the libgcc_s.so.1 must be installed for pthread_cancel to work error
 
 
-265 batch wroks on a40
+256 batch wroks on a40
+
+9767566 -a40 -256
