@@ -7,8 +7,8 @@ import time
 
 if __name__ == '__main__':
     config = create_config()
-    config.training.checkpoints_folder = './checkpoints/'+ str(time.time()) + '/'
-    config.checkpoints_prefix = "DiMA-AFDB"
+    config.training.checkpoints_folder = './checkpoints/'+ str(time.time()).split(".")[0] + '/'
+    config.checkpoints_prefix = "DiMA-AFDB"+str(time.time()).split(".")[0]
     config.training.batch_size_per_gpu = config.training.batch_size 
     config.device = "cuda" if torch.cuda.is_available() else "cpu"
     config.project_name = 'proteins'
