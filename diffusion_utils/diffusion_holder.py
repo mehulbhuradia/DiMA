@@ -14,22 +14,16 @@ from torch.nn.functional import cross_entropy
 from torch.cuda.amp import GradScaler
 from timm.scheduler.cosine_lr import CosineLRScheduler
 from typing import List, Dict, Union, Tuple
-
-print(torch.__version__)
 from model.score_estimator import ScoreEstimatorEMB
-print(torch.__version__)
 from model.ema_model import ExponentialMovingAverage
-print(torch.__version__)
 from diffusion_utils.diffusion_dynamic_sde import create_sde, create_solver
-print(torch.__version__)
 from encoders import EncNormalizer, ESM2EncoderModel
-print(torch.__version__)
 from utils import dict_to_cuda, reduce_tensor, masked_mean, masked_std, make_mask_wo_SEP_CLS, set_seed, gather_texts, load_fasta_file
 print(torch.__version__)
 from evaluation import calculate_fid_for_files
 print(torch.__version__)
 from diffusion_utils import LengthSampler
-print(torch.__version__)
+
 
 class DiffusionRunner:
     def __init__(
