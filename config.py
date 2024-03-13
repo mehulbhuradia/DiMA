@@ -63,7 +63,7 @@ def create_config():
     data.enc_mean = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
     data.enc_std = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
     
-    config.decoder_path = f"./checkpoints/decoder-{config.model.hg_name_hash}-{config.data.dataset}.pth"
+    config.decoder_path = f"./checkpoints/decoder-{config.model.hg_name_hash}-{config.data.dataset}--3000.pth"
     config.seed = 0
     config.ddp = True
     config.use_self_cond = True
