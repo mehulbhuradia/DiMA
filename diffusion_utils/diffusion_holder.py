@@ -3,7 +3,6 @@ import json
 import torch
 import wandb
 import numpy as np
-import torch.distributed as dist
 from copy import deepcopy
 from ml_collections import ConfigDict
 from random import random
@@ -60,16 +59,10 @@ class DiffusionRunner:
             input_size=self.config.model.hidden_size,
             config=config.bert_config
         ).cuda().train()
-        self.ddp_score_estimator = self.score_estimator
-        if self.config.ddp:
-            self.ddp_score_estimator = torch.nn.parallel.DistributedDataParallel(
-                self.score_estimator,
-                device_ids=[config.local_rank],
-                broadcast_buffers=False,
-            )
+        
         self.total_number_params = sum(p.numel() for p in self.score_estimator.parameters() if p.requires_grad)
         self.config.model.total_number_params = self.total_number_params
-        self.device = next(self.score_estimator.parameters()).device
+        self.device = config.device
 
         self.sde = create_sde(config=config, score_fn=self.calc_score)
         self.diff_eq_solver = create_solver(config, self.sde, ode_sampling=config.sde.ode_sampling)
@@ -84,14 +77,13 @@ class DiffusionRunner:
         self.valid_dataset = None
         self.length_sampler = LengthSampler(path=self.config.data.test_dataset_path, max_len=self.config.data.max_sequence_len - 2)
         
-        if self.config.ddp and dist.get_rank() == 0 and not eval:
+        if not eval:
             wandb.init(
                 project=self.config.project_name,
                 name=self.config.checkpoints_prefix,
                 config=dict(self.config),
                 mode="online"
             )
-        
 
     def restore_parameters(self, device: Optional[torch.device] = None) -> None:
         checkpoints_folder: str = self.checkpoints_folder
@@ -143,18 +135,7 @@ class DiffusionRunner:
             self.train_dataset = load_fasta_file(self.config.data.train_dataset_path)
         print("Train dataset length:", len(self.train_dataset))
 
-        if self.config.ddp:
-            num_tasks = dist.get_world_size()
-            global_rank = dist.get_rank()
-
-            sampler_train = torch.utils.data.DistributedSampler(
-                self.train_dataset,
-                num_replicas=num_tasks,
-                rank=global_rank,
-                shuffle=True,
-            )
-        else:
-            sampler_train = None
+        sampler_train = None
 
         self.train_loader = DataLoader(
             self.train_dataset,
@@ -169,18 +150,12 @@ class DiffusionRunner:
             self.valid_dataset = load_fasta_file(self.config.data.test_dataset_path)
         print("Valid dataset length:", len(self.valid_dataset))
 
-        if self.config.ddp:
-            sampler_valid = torch.utils.data.distributed.DistributedSampler(
-                self.valid_dataset,
-                shuffle=False
-            )
-        else:
-            sampler_valid = None
+        sampler_valid = None
 
         self.valid_loader = DataLoader(
             self.valid_dataset,
             sampler=sampler_valid,
-            batch_size=self.config.validation.batch_size // dist.get_world_size(),
+            batch_size=self.config.validation.batch_size,
             num_workers=15,
             pin_memory=False,
         )
@@ -204,8 +179,7 @@ class DiffusionRunner:
 
         clipped_grad_norm = torch.sqrt(sum([torch.sum(t.grad ** 2) for t in self.score_estimator.parameters()]))
 
-        if dist.get_rank() == 0:
-            self.log_metric('lr', 'train', self.optimizer.param_groups[0]['lr'])
+        self.log_metric('lr', 'train', self.optimizer.param_groups[0]['lr'])
         self.grad_scaler.step(self.optimizer)
         self.grad_scaler.update()
 
@@ -227,7 +201,7 @@ class DiffusionRunner:
         if mask is None:
             mask = torch.ones(
                 (targets.shape[0], targets.shape[1]),
-                device=f"cuda:{dist.get_rank()}",
+                device=self.device,
                 requires_grad=False,
                 dtype=torch.int64,
             )
@@ -242,7 +216,7 @@ class DiffusionRunner:
         if mask is None:
             mask = torch.ones(
                 (targets.shape[0], targets.shape[1]),
-                device=f"cuda:{dist.get_rank()}",
+                device=self.device,
                 requires_grad=False,
                 dtype=torch.int64,
             )
@@ -255,7 +229,7 @@ class DiffusionRunner:
         if mask is None:
             mask = torch.ones(
                 (inputs.shape[0], inputs.shape[1]),
-                device=f"cuda:{dist.get_rank()}",
+                device=self.device,
                 requires_grad=False,
                 dtype=torch.int64,
             )
@@ -272,7 +246,7 @@ class DiffusionRunner:
         if mask is None:
             mask = torch.ones(
                 (z.shape[0], z.shape[1]),
-                device=f"cuda:{dist.get_rank()}",
+                device=self.device,
                 requires_grad=False,
                 dtype=torch.int64,
             )
@@ -315,7 +289,7 @@ class DiffusionRunner:
         x_0_self_cond = torch.zeros_like(x_t, dtype=x_t.dtype)
         if self.use_self_cond and random() < 0.5:
             with torch.autocast(device_type='cuda', dtype=torch.float16):
-                x_0_self_cond = self.ddp_score_estimator(
+                x_0_self_cond = self.score_estimator(
                     x_t=x_t, time_t=t,
                     attention_mask=mask,
                     x_0_self_cond=x_0_self_cond
@@ -324,7 +298,7 @@ class DiffusionRunner:
         # model prediction
         with torch.autocast(device_type='cuda', dtype=torch.float16):
             scores = self.calc_score(
-                self.ddp_score_estimator,
+                self.score_estimator,
                 x_t, t,
                 mask=mask,
                 x_0_self_cond=x_0_self_cond,
@@ -387,7 +361,7 @@ class DiffusionRunner:
 
         while True:
             self.set_train_data_generator()
-            self.ddp_score_estimator.train()
+            self.score_estimator.train()
             self.train_epoch()
 
             if self.step >= self.config.training.training_iters:
@@ -427,23 +401,22 @@ class DiffusionRunner:
 
         stat_dict["grad_norm"], stat_dict["clipped_grad_norm"] = self.optimizer_step(loss_dict['total_loss'])
 
-        if dist.get_rank() == 0:
-            if self.step % 10 == 0:
-                stat_dict["weight_norm"] = torch.sqrt(
-                    sum([torch.sum(t.data ** 2) for t in self.score_estimator.parameters()]))
+        if self.step % 10 == 0:
+            stat_dict["weight_norm"] = torch.sqrt(
+                sum([torch.sum(t.data ** 2) for t in self.score_estimator.parameters()]))
 
-                for k, v in loss_dict.items():
-                    self.log_metric(k, 'train', v.item())
+            for k, v in loss_dict.items():
+                self.log_metric(k, 'train', v.item())
 
-                for k, v in stat_dict.items():
-                    self.log_metric(k, 'train', v.item())
+            for k, v in stat_dict.items():
+                self.log_metric(k, 'train', v.item())
 
         return loss_dict, stat_dict
 
     def validate(self) -> None:
-        prev_mode = self.ddp_score_estimator.training
+        prev_mode = self.score_estimator.training
 
-        self.ddp_score_estimator.eval()
+        self.score_estimator.eval()
         self.switch_to_ema()
 
         valid_loss: Dict[str, torch.Tensor] = dict()
@@ -468,38 +441,37 @@ class DiffusionRunner:
 
         for k, v in valid_loss.items():
             valid_loss[k] = v / valid_count
-        if dist.get_rank() == 0:
-            for k, v in valid_loss.items():
-                self.log_metric(k, 'valid_loader', v)
+        
+        for k, v in valid_loss.items():
+            self.log_metric(k, 'valid_loader', v)
 
         self.switch_back_from_ema()
-        self.ddp_score_estimator.train(prev_mode)
+        self.score_estimator.train(prev_mode)
 
     def save_checkpoint(self, last: bool = False) -> None:
-        if dist.get_rank() == 0:
-            if not os.path.exists(self.checkpoints_folder):
-                os.makedirs(self.checkpoints_folder)
+        if not os.path.exists(self.checkpoints_folder):
+            os.makedirs(self.checkpoints_folder)
 
-            prefix = ''
-            if self.config.checkpoints_prefix:
-                prefix = self.config.checkpoints_prefix + '_'
-            if last:
-                prefix = prefix + 'last_'
-            else:
-                prefix = prefix + str(self.step) + '_'
+        prefix = ''
+        if self.config.checkpoints_prefix:
+            prefix = self.config.checkpoints_prefix + '_'
+        if last:
+            prefix = prefix + 'last_'
+        else:
+            prefix = prefix + str(self.step) + '_'
 
-            torch.save(
-                {   
-                    "model": self.score_estimator.state_dict(),
-                    "decoder": self.decoder.state_dict(),
-                    "ema": self.ema.state_dict(),
-                    "optimizer": self.optimizer.state_dict(),
-                    "scheduler": self.scheduler.state_dict(),
-                    "step": self.step,
-                },
-                os.path.join(self.checkpoints_folder, prefix + ".pth")
-            )
-            print(f"Save model to: {os.path.join(self.checkpoints_folder, prefix + f'model.pth')}")
+        torch.save(
+            {   
+                "model": self.score_estimator.state_dict(),
+                "decoder": self.decoder.state_dict(),
+                "ema": self.ema.state_dict(),
+                "optimizer": self.optimizer.state_dict(),
+                "scheduler": self.scheduler.state_dict(),
+                "step": self.step,
+            },
+            os.path.join(self.checkpoints_folder, prefix + ".pth")
+        )
+        print(f"Save model to: {os.path.join(self.checkpoints_folder, prefix + f'model.pth')}")
 
     def refresh_checkpoint(self):
         if not self.config.refresh.true:
@@ -570,30 +542,26 @@ class DiffusionRunner:
         self.score_estimator.eval()
         self.switch_to_ema()
         
-        num_texts = int(self.config.validation.num_gen_texts / dist.get_world_size())
-        if dist.get_rank() < self.config.validation.num_gen_texts % dist.get_world_size():
-            num_texts += 1
+        num_texts = int(self.config.validation.num_gen_texts)
 
-        seed = self.config.seed + dist.get_rank()
+        seed = self.config.seed
         set_seed(seed)
         output = self.generate_text(batch_size=num_texts)
 
         result = [{"protein": p} for p in output]
-        if self.config.ddp:
-            result = gather_texts(result)
 
-        if not self.config.ddp or dist.get_rank() == 0:
-            texts_path = "./generated_seqs"
-            os.makedirs(texts_path, exist_ok=True)
+        
+        texts_path = "./generated_seqs"
+        os.makedirs(texts_path, exist_ok=True)
 
-            file_name = f"{texts_path}/{self.config.checkpoints_prefix}-{self.config.sde.N}-{len(result)}-{suffix}.json"
-            json.dump(result, open(file_name, "w"), indent=4)
-            print(file_name)
+        file_name = f"{texts_path}/{self.config.checkpoints_prefix}-{self.config.sde.N}-{len(result)}-{suffix}.json"
+        json.dump(result, open(file_name, "w"), indent=4)
+        print(file_name)
 
-            fid_value = calculate_fid_for_files(self.config.data.test_dataset_path, file_name)
-            print(f"FID: {fid_value:0.5f}")
+        fid_value = calculate_fid_for_files(self.config.data.test_dataset_path, file_name)
+        print(f"FID: {fid_value:0.5f}")
 
-        if not eval and self.config.ddp and dist.get_rank() == 0:
+        if not eval:
             self.log_metric(metric_name="FID", loader_name="", value=fid_value)
 
         self.switch_back_from_ema()

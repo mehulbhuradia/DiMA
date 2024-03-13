@@ -16,4 +16,4 @@ conda activate /tudelft.net/staff-umbrella/Mehul/DiMA/dima
 
 export TMPDIR=./tmp/
 
-srun torchrun --nproc_per_node=1 --master_port=31345  train_diffusion.py
+srun python  train_diffusion.py
