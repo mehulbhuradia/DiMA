@@ -3,13 +3,15 @@ import logging
 import os
 import json
 import torch
+print(torch.__version__)
 from Bio import SeqIO
 import torch
 import numpy as np
 import re
+print(torch.__version__)
 from scipy import linalg
 from transformers import T5Tokenizer, T5EncoderModel
-
+print(torch.__version__)
 
 
 def setup_logger(log_file):

@@ -19,9 +19,7 @@ from model.ema_model import ExponentialMovingAverage
 from diffusion_utils.diffusion_dynamic_sde import create_sde, create_solver
 from encoders import EncNormalizer, ESM2EncoderModel
 from utils import dict_to_cuda, reduce_tensor, masked_mean, masked_std, make_mask_wo_SEP_CLS, set_seed, gather_texts, load_fasta_file
-print(torch.__version__)
 from evaluation import calculate_fid_for_files
-print(torch.__version__)
 from diffusion_utils import LengthSampler
 
 
