@@ -314,7 +314,7 @@ class DiffusionRunner:
         # self-cond estimate
         x_0_self_cond = torch.zeros_like(x_t, dtype=x_t.dtype)
         if self.use_self_cond and random() < 0.5:
-            with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+            with torch.autocast(device_type='cuda', dtype=torch.float16):
                 x_0_self_cond = self.ddp_score_estimator(
                     x_t=x_t, time_t=t,
                     attention_mask=mask,
@@ -322,7 +322,7 @@ class DiffusionRunner:
                 ).detach()
 
         # model prediction
-        with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+        with torch.autocast(device_type='cuda', dtype=torch.float16):
             scores = self.calc_score(
                 self.ddp_score_estimator,
                 x_t, t,
