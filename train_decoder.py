@@ -89,7 +89,14 @@ def train(config, encoder, decoder, exp_name):
 
     eval_freq = 1000
     step = 0
-    epochs = 1
+    epochs = 1000
+    
+    checkpoints_folder = './checkpoints/'
+    os.makedirs(checkpoints_folder, exist_ok=True)
+
+    best_val_loss = float('inf')
+    early_stopping_patience = 50
+
     for _ in range(epochs):
         decoder.train()
 
@@ -127,20 +134,27 @@ def train(config, encoder, decoder, exp_name):
 
                 wandb.log({f'valid loss': loss.item()}, step=step)
                 wandb.log({f'valid accuracy': acc.item()}, step=step)
-            if step == 100:
-                break
+                if loss < best_val_loss:
+                    early_stopping_counter = 0
+                    best_val_loss = loss
+                    name = os.path.join(checkpoints_folder, f"decoder-{config.model.hg_name_hash}-{config.data.dataset}--{step}.pth")
+                    decoder.eval()
+                    torch.save(
+                        {
+                            "decoder": decoder.state_dict(),
+                        },
+                        name
+                    )
+                    print(f"Save model to: {name}")
+                else:
+                    early_stopping_counter += 1
+                    if early_stopping_counter >= early_stopping_patience:
+                        print(f"Early stopping at step {step}")
+                        return
+            # if step == 100:
+            #     break
 
-    checkpoints_folder = './checkpoints/'
-    os.makedirs(checkpoints_folder, exist_ok=True)
-    name = os.path.join(checkpoints_folder, f"decoder-{config.model.hg_name_hash}-{config.data.dataset}.pth")
-    decoder.eval()
-    torch.save(
-        {
-            "decoder": decoder.state_dict(),
-        },
-        name
-    )
-    print(f"Save model to: {name}")
+    
 
 
 if __name__ == "__main__":
