@@ -1,3 +1,4 @@
 128 to 254 res len
 bfloat doesnt work on compute<8
 bfloat has same precision as f32 but i use f16 for speed
+.plddt fromevaluation was causing the libgcc_s.so.1 must be installed for pthread_cancel to work error
