@@ -18,7 +18,7 @@ def create_config():
     training.training_iters = 1_000_000
     training.checkpoint_freq = 50_000
     training.eval_freq = 50_000
-    training.batch_size = 512
+    training.batch_size = 128
 
     training.ode_sampling = False
     training.checkpoints_folder = './checkpoints/'
@@ -32,7 +32,7 @@ def create_config():
     refresh.prefix = ""
 
     validation = config.validation = ml_collections.ConfigDict()
-    validation.batch_size = 512
+    validation.batch_size = 128
     validation.validation_iters = int(10_000 / validation.batch_size)
     validation.num_gen_texts = 2048
 
