@@ -151,8 +151,6 @@ def train(config, encoder, decoder, exp_name):
                     if early_stopping_counter >= early_stopping_patience:
                         print(f"Early stopping at step {step}")
                         return
-            # if step == 100:
-            #     break
 
     
 

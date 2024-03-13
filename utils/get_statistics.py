@@ -53,9 +53,6 @@ def compute_mean_std(
         std = torch.sqrt(sqr_sum_[:3] / num - mean ** 2)
         T.set_description(f"mean: {[m.item() for m in mean]}, std2: {[s.item() for s in std]}")
 
-        if i == 1000:
-            break
-
     mean = sum_ / num
     std = torch.sqrt(sqr_sum_ / num - mean ** 2)
 
