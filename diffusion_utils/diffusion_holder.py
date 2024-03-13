@@ -379,6 +379,7 @@ class DiffusionRunner:
 
     def train_epoch(self):
         for _, X in enumerate(self.train_loader):
+            torch.cuda.empty_cache()
             if self.step >= self.config.training.training_iters:
                 return
             _ = next(self.train_range_iter)
@@ -430,6 +431,7 @@ class DiffusionRunner:
 
         with torch.no_grad():
             for X in self.valid_loader:
+                torch.cuda.empty_cache()
                 X = dict_to_cuda(X)
                 clean_X, tokenized_X = self.encoder_decoder.batch_encode(X)
 
