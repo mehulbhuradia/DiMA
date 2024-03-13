@@ -65,7 +65,7 @@ def create_config():
     
     config.decoder_path = f"./checkpoints/decoder-{config.model.hg_name_hash}-{config.data.dataset}--3000.pth"
     config.seed = 0
-    config.ddp = True
+    config.ddp = False
     config.use_self_cond = True
     config.bert_config = bert_config
     config.project_name = "proteins_dif"
