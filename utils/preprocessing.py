@@ -84,6 +84,28 @@ def make_train_val(filepath, train_size=0.9):
     val = sequences[train_size:]
     return train, val
 
+def preprocess_fasta_trim(file_path, min_seq_length=128, max_seq_length=254):
+    sequences = []
+    with open(file_path, "r") as fasta_file:
+        records = list(SeqIO.parse(fasta_file, "fasta"))
+        for record in tqdm(records, desc="Processing sequences", unit="sequence"):
+            s = str(record.seq)
+            if len(s) < min_seq_length or contains_special_letters(s):
+                continue
+            if len(s) > max_seq_length:
+                start = random.randint(0, len(s) - max_seq_length)
+                s = s[start:start + max_seq_length]
+            sequences.append(SeqRecord(Seq(s)))
+    return sequences
+
+def make_train_val_trim(filepath, train_size=0.9):
+    sequences = preprocess_fasta_trim(filepath)
+    random.shuffle(sequences)
+    train_size = int(len(sequences) * train_size)
+    train = sequences[:train_size]
+    val = sequences[train_size:]
+    return train, val
+
 def save_fasta(sequences, output_file):
     SeqIO.write(sequences, output_file, "fasta")
     print(f"FASTA file '{output_file}' created successfully.")
@@ -91,8 +113,18 @@ def save_fasta(sequences, output_file):
 
 if __name__ == "__main__":
     # Example usage
-    train, val = make_train_val("data/AFDBv4_90.fasta")
-    save_fasta(train, "data/AFDB/AFDBv4_90.128-254-train.fasta")
-    save_fasta(val, "data/AFDB/AFDBv4_90.128-254-valid.fasta")
+    # train, val = make_train_val("data/AFDBv4_90.fasta")
+    # save_fasta(train, "data/AFDB/AFDBv4_90.128-254-train.fasta")
+    # save_fasta(val, "data/AFDB/AFDBv4_90.128-254-valid.fasta")
+    # print(f"Train size: {len(train)}")
+    # print(f"Validation size: {len(val)}")
+    # train, val = make_train_val("data/uniprot_sprot.fasta")
+    # save_fasta(train, "data/uniprot/uniprot-train.fasta")
+    # save_fasta(val, "data/uniprot/uniprot-valid.fasta")
+    # print(f"Train size: {len(train)}")
+    # print(f"Validation size: {len(val)}")
+    train, val = make_train_val_trim("data/uniprot_sprot.fasta")
+    save_fasta(train, "data/uniprot_trim/uniprot_trim-train.fasta")
+    save_fasta(val, "data/uniprot_trim/uniprot_trim-valid.fasta")
     print(f"Train size: {len(train)}")
     print(f"Validation size: {len(val)}")
