@@ -353,7 +353,7 @@ class DiffusionRunner:
             self.estimation(suffix=f"masked-sc-Euler")
             self.validate()
 
-        self.train_range = trange(self.step + 1, self.config.training.training_iters + 1)
+        self.train_range = trange(self.step + 1, self.config.training.training_iters + 1, desc="Training Progress")
         self.train_range_iter = iter(self.train_range)
 
         while True:
@@ -524,7 +524,7 @@ class DiffusionRunner:
             x_0_self_cond = torch.zeros_like(x, dtype=x.dtype)
             eps_t = 0.01
             timesteps = torch.linspace(self.sde.T, eps_t, self.sde.N, device=self.device)
-            for i in tqdm(range(self.sde.N)):
+            for i in tqdm(range(self.sde.N), desc="Diffusion steps"):
                 t = timesteps[i]
                 vec_t = torch.ones(shape[0], device=t.device) * t
                 output = self.diff_eq_solver.step(
