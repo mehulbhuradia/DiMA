@@ -61,7 +61,7 @@ def create_config():
     if data.dataset == "AFDB":
         data.train_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-train.fasta'
         data.test_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-valid.fasta'
-        data.decoder_epoch = "84000"
+        data.decoder_epoch = "213000"
     elif data.dataset == "uniprot":
         data.train_dataset_path = f'./data/{data.dataset}/uniprot-train.fasta'
         data.test_dataset_path = f'./data/{data.dataset}/uniprot-valid.fasta'

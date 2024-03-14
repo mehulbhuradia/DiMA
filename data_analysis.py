@@ -11,6 +11,8 @@ def get_entries(csv_files):
     combined_df = pd.concat(all_entries, ignore_index=True)
     return combined_df
 
+# wont work cuz i deleted the csv files
+
 # Paths to your CSV files for test, validation, etc.
 csv_files_1 = ['./ESP/train_val/ESP_train_df.csv', 
                './ESP/train_val/ESP_val_df.csv', 
@@ -67,3 +69,11 @@ filtered_df_1 = filtered_df_1.drop(columns=['molecule ID', 'output'])
 
 # Drop 'molecule ID' and 'output' columns from filtered_df_2
 filtered_df_2 = filtered_df_2.drop(columns=['molecule ID', 'output'])
+
+# Save filtered DataFrames to CSV files
+filtered_df_1.to_csv('esp.csv', index=False)
+filtered_df_2.to_csv('esp_phylo.csv', index=False)
+
+# Number of entries after filtering:
+# Dataset 1: 1955
+# Dataset 2: 27896
