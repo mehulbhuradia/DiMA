@@ -438,9 +438,9 @@ class DiffusionRunner:
                         valid_loss[k] = torch.Tensor([v.item() * clean_X.size(0)])
                 valid_count += clean_X.size(0)
 
-        valid_count = reduce_tensor(valid_count.cuda())
+        valid_count = valid_count.cuda()
         for k, v in valid_loss.items():
-            valid_loss[k] = reduce_tensor(valid_loss[k].cuda())
+            valid_loss[k] = valid_loss[k].cuda()
 
         for k, v in valid_loss.items():
             valid_loss[k] = v / valid_count

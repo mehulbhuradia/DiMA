@@ -11,3 +11,5 @@ bfloat has same precision as f32 but i use f16 for speed
 128 is more reliable?
 
 bfloat works on a40
+
+9792105 to test val
