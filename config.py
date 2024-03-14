@@ -57,21 +57,24 @@ def create_config():
     data = config.data = ml_collections.ConfigDict()
     data.max_sequence_len = 256
     data.dataset = "AFDB"
-    
+
     if data.dataset == "AFDB":
         data.train_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-train.fasta'
         data.test_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-valid.fasta'
+        data.decoder_epoch = "84000"
     elif data.dataset == "uniprot":
         data.train_dataset_path = f'./data/{data.dataset}/uniprot-train.fasta'
         data.test_dataset_path = f'./data/{data.dataset}/uniprot-valid.fasta'
+        data.decoder_epoch = "27000"
     elif data.dataset == "uniprot_trim":
         data.train_dataset_path = f'./data/{data.dataset}/uniprot_trim-train.fasta'
         data.test_dataset_path = f'./data/{data.dataset}/uniprot_trim-valid.fasta'
+        data.decoder_epoch = "29000"
     
     data.enc_mean = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
     data.enc_std = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
     
-    config.decoder_path = f"./checkpoints/decoder-{config.model.hg_name_hash}-{config.data.dataset}--84000.pth"
+    config.decoder_path = f"./checkpoints/decoder-{config.model.hg_name_hash}-{config.data.dataset}--{config.data.decoder_epoch}.pth"
     config.seed = 0
     config.ddp = False
     config.use_self_cond = True
