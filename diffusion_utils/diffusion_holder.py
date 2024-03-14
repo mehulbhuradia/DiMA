@@ -140,7 +140,7 @@ class DiffusionRunner:
             self.train_dataset,
             sampler=sampler_train,
             batch_size=self.config.training.batch_size_per_gpu,
-            num_workers=15,
+            num_workers=2,
             pin_memory=False,
         )
 
@@ -155,7 +155,7 @@ class DiffusionRunner:
             self.valid_dataset,
             sampler=sampler_valid,
             batch_size=self.config.validation.batch_size,
-            num_workers=15,
+            num_workers=2,
             pin_memory=False,
         )
 

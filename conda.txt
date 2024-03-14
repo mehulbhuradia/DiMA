@@ -28,5 +28,9 @@ pip install joblib==1.2.0 --user
 pip install argparse==1.4.0 --user
 pip install fair-esm --user
 
+# Recomendded
+conda install -c conda-forge accelerate
+
+
 
 conda activate /tudelft.net/staff-umbrella/Mehul/DiMA/dima
