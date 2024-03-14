@@ -423,12 +423,9 @@ class DiffusionRunner:
 
         valid_loss: Dict[str, torch.Tensor] = dict()
         valid_count = torch.Tensor([0.0])
-        count = 0
+
         with torch.no_grad():
             for X in self.valid_loader:
-                count += 1
-                if count > 10:
-                    break
                 torch.cuda.empty_cache()
                 X = dict_to_cuda(X)
                 clean_X, tokenized_X = self.encoder_decoder.batch_encode(X)
