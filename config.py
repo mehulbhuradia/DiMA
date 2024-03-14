@@ -16,8 +16,8 @@ def create_config():
 
     training = config.training = ml_collections.ConfigDict()
     training.training_iters = 50_000_000
-    training.checkpoint_freq = 50
-    training.eval_freq = 50
+    training.checkpoint_freq = 50_000
+    training.eval_freq = 50_000
     training.batch_size = 128
 
     training.ode_sampling = False
