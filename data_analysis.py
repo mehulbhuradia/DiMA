@@ -31,6 +31,9 @@ all_entries_df_2 = get_entries(csv_files_2)
 all_entries_df_1 = all_entries_df_1[all_entries_df_1['output'] != 0]
 all_entries_df_2 = all_entries_df_2[all_entries_df_2['output'] != 0]
 
+print("Number of entries before filtering for length:")
+print("Dataset 1:", len(all_entries_df_1))
+print("Dataset 2:", len(all_entries_df_2))
 
 print("Column names:",all_entries_df_1.columns.tolist())
 
@@ -71,8 +74,8 @@ filtered_df_1 = filtered_df_1.drop(columns=['molecule ID', 'output'])
 filtered_df_2 = filtered_df_2.drop(columns=['molecule ID', 'output'])
 
 # Save filtered DataFrames to CSV files
-filtered_df_1.to_csv('esp.csv', index=False)
-filtered_df_2.to_csv('esp_phylo.csv', index=False)
+# filtered_df_1.to_csv('esp.csv', index=False)
+# filtered_df_2.to_csv('esp_phylo.csv', index=False)
 
 # Number of entries after filtering:
 # Dataset 1: 1955
