@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH --partition=general
-#SBATCH --job-name=dima_diffusion
+#SBATCH --job-name=dima_stats
 #SBATCH --qos=short         
 #SBATCH --time=4:00:00      
 #SBATCH --ntasks=1         
