@@ -57,8 +57,16 @@ def create_config():
     data = config.data = ml_collections.ConfigDict()
     data.max_sequence_len = 256
     data.dataset = "AFDB"
-    data.train_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-train.fasta'
-    data.test_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-valid.fasta'
+    
+    if data.dataset == "AFDB":
+        data.train_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-train.fasta'
+        data.test_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-valid.fasta'
+    elif data.dataset == "uniprot":
+        data.train_dataset_path = f'./data/{data.dataset}/uniprot-train.fasta'
+        data.test_dataset_path = f'./data/{data.dataset}/uniprot-valid.fasta'
+    elif data.dataset == "uniprot_trim":
+        data.train_dataset_path = f'./data/{data.dataset}/uniprot_trim-train.fasta'
+        data.test_dataset_path = f'./data/{data.dataset}/uniprot_trim-valid.fasta'
     
     data.enc_mean = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
     data.enc_std = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
