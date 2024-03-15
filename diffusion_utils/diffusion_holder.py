@@ -379,10 +379,11 @@ class DiffusionRunner:
 
             if self.step % self.config.training.checkpoint_freq == 0:
                 self.save_checkpoint()
-
+                self.validate()
+                
             if self.step % self.config.training.eval_freq == 0:
                 self.estimation(suffix=f"masked-sc-Euler")
-                self.validate()
+                
 
             self.train_range.set_description(
                 f"loss_eps: {loss_dict['loss_eps'].item():0.4f}, "
