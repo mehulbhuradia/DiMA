@@ -3,3 +3,5 @@ __pycache__/
 wandb/
 gitkey.txt
 ESP/
+checkpoints/
+SMILES_ESP.pkl
