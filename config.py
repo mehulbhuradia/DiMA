@@ -5,7 +5,7 @@ def create_config():
     config = ml_collections.ConfigDict()
     optim = config.optim = ml_collections.ConfigDict()
     optim.grad_clip_norm = 1.
-    optim.linear_warmup = 5_000
+    optim.linear_warmup = 1_000
     optim.lr = 5e-3
     optim.min_lr = 2e-4
     optim.warmup_lr = 0.
@@ -15,10 +15,10 @@ def create_config():
     optim.eps = 1e-6
 
     training = config.training = ml_collections.ConfigDict()
-    training.training_iters = 50_000_000
+    training.training_iters = 1_000_000
     training.checkpoint_freq = 50_000
     training.eval_freq = 50_000
-    training.batch_size = 128
+    training.batch_size = 64
 
     training.ode_sampling = False
     training.checkpoints_folder = './checkpoints/'
@@ -56,7 +56,7 @@ def create_config():
 
     data = config.data = ml_collections.ConfigDict()
     data.max_sequence_len = 256
-    data.dataset = "AFDB"
+    data.dataset = "uniprot"
 
     if data.dataset == "AFDB":
         data.train_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-train.fasta'
