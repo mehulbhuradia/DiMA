@@ -16,7 +16,7 @@ def get_last_layer_repr(smiles):
 
     tokens = tokenizer(
             smiles, 
-            max_length=408, 
+            max_length=410, 
             padding='max_length', 
             truncation=True, 
             return_tensors="pt")
