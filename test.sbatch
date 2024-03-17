@@ -1,0 +1,20 @@
+#!/bin/sh
+#SBATCH --partition=general
+#SBATCH --job-name=test_dima
+#SBATCH --qos=short         
+#SBATCH --time=00:50:00      
+#SBATCH --ntasks=1         
+#SBATCH --cpus-per-task=2   
+#SBATCH --mem-per-cpu=100G
+#SBATCH --mail-type=END     
+#SBATCH --gres=gpu:a40
+
+module use /opt/insy/modulefiles
+module load cuda/12.2 cudnn/12-8.9.1.23 miniconda/3.10
+
+conda activate /tudelft.net/staff-umbrella/Mehul/DiMA/dima
+
+export TMPDIR=./tmp/
+export HF_HOME=/tmp/mbhuradia/
+
+srun python train_diffusion.py
