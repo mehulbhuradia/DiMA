@@ -55,7 +55,7 @@ def create_config():
     model.hg_name_hash = "esm2-150M"
 
     data = config.data = ml_collections.ConfigDict()
-    data.max_sequence_len = 256
+    data.max_sequence_len = 500
     data.dataset = "uniprot_500"
     
     data.train_dataset_path = f'./data/{data.dataset}/uniprot_500-train.fasta'
