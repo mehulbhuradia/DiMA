@@ -6,7 +6,7 @@ def create_config():
     optim = config.optim = ml_collections.ConfigDict()
     optim.grad_clip_norm = 1.
     optim.linear_warmup = 1_000
-    optim.lr = 1e-3
+    optim.lr = 2e-4
     optim.min_lr = 2e-4
     optim.warmup_lr = 0.
     optim.weight_decay = 0.01
@@ -50,9 +50,9 @@ def create_config():
     model.dif_enc_type = "base"
     model.prediction = "x_0"
     model.loss = "L_x_0"
-    model.hidden_size = 320
-    model.hg_name = "facebook/esm2_t6_8M_UR50D"
-    model.hg_name_hash = "esm2-8M"
+    model.hidden_size = 640
+    model.hg_name = "facebook/esm2_t30_150M_UR50D"
+    model.hg_name_hash = "esm2-150M"
 
     data = config.data = ml_collections.ConfigDict()
     data.max_sequence_len = 256
@@ -85,7 +85,7 @@ def create_config():
 
 
 bert_config = BertConfig(**{
-    "hidden_size": 320,
+    "hidden_size": 640,
     "hidden_act": "gelu",
     "initializer_range": 0.02,
     "vocab_size": 30522,
