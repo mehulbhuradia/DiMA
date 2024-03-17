@@ -56,11 +56,13 @@ def create_config():
 
     data = config.data = ml_collections.ConfigDict()
     data.max_sequence_len = 500
+    data.min_sequence_len = 50
+    data.csv_file = './ESP/esp_phylo_all.csv'
+    data.smiles_path = './ESP/smiles.pkl'
     data.dataset = "uniprot_500"
     
     data.train_dataset_path = f'./data/{data.dataset}/uniprot_500-train.fasta'
     data.test_dataset_path = f'./data/{data.dataset}/uniprot_500-valid.fasta'
-    data.cross_dataset_path = './ESP/esp_phylo_all.csv'
     data.decoder_epoch = "1000"
     
     
