@@ -65,7 +65,7 @@ def preprocess_sequences(file_path, min_seq_length=128, max_seq_length=254):
             sequences.remove(seq)
     return sequences
 
-def preprocess_fasta(file_path, min_seq_length=128, max_seq_length=254):
+def preprocess_fasta(file_path, min_seq_length=50, max_seq_length=500):
     sequences = []
     with open(file_path, "r") as fasta_file:
         records = list(SeqIO.parse(fasta_file, "fasta"))
@@ -118,13 +118,15 @@ if __name__ == "__main__":
     # save_fasta(val, "data/AFDB/AFDBv4_90.128-254-valid.fasta")
     # print(f"Train size: {len(train)}")
     # print(f"Validation size: {len(val)}")
-    # train, val = make_train_val("data/uniprot_sprot.fasta")
-    # save_fasta(train, "data/uniprot/uniprot-train.fasta")
-    # save_fasta(val, "data/uniprot/uniprot-valid.fasta")
-    # print(f"Train size: {len(train)}")
-    # print(f"Validation size: {len(val)}")
-    train, val = make_train_val_trim("data/uniprot_sprot.fasta")
-    save_fasta(train, "data/uniprot_trim/uniprot_trim-train.fasta")
-    save_fasta(val, "data/uniprot_trim/uniprot_trim-valid.fasta")
+    train, val = make_train_val("data/uniprot_sprot.fasta")
+    save_fasta(train, "data/uniprot_500/uniprot_500-train.fasta")
+    save_fasta(val, "data/uniprot_500/uniprot_500-valid.fasta")
     print(f"Train size: {len(train)}")
     print(f"Validation size: {len(val)}")
+    #     Train size: 400727
+    # Validation size: 44526
+    # train, val = make_train_val_trim("data/uniprot_sprot.fasta")
+    # save_fasta(train, "data/uniprot_trim/uniprot_trim-train.fasta")
+    # save_fasta(val, "data/uniprot_trim/uniprot_trim-valid.fasta")
+    # print(f"Train size: {len(train)}")
+    # print(f"Validation size: {len(val)}")

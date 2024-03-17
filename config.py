@@ -56,20 +56,13 @@ def create_config():
 
     data = config.data = ml_collections.ConfigDict()
     data.max_sequence_len = 256
-    data.dataset = "uniprot"
-
-    if data.dataset == "AFDB":
-        data.train_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-train.fasta'
-        data.test_dataset_path = f'./data/{data.dataset}/AFDBv4_90.128-254-valid.fasta'
-        data.decoder_epoch = "340000"
-    elif data.dataset == "uniprot":
-        data.train_dataset_path = f'./data/{data.dataset}/uniprot-train.fasta'
-        data.test_dataset_path = f'./data/{data.dataset}/uniprot-valid.fasta'
-        data.decoder_epoch = "203000"
-    elif data.dataset == "uniprot_trim":
-        data.train_dataset_path = f'./data/{data.dataset}/uniprot_trim-train.fasta'
-        data.test_dataset_path = f'./data/{data.dataset}/uniprot_trim-valid.fasta'
-        data.decoder_epoch = "53000"
+    data.dataset = "uniprot_500"
+    
+    data.train_dataset_path = f'./data/{data.dataset}/uniprot_500-train.fasta'
+    data.test_dataset_path = f'./data/{data.dataset}/uniprot_500-valid.fasta'
+    data.cross_dataset_path = './ESP/esp_phylo_all.csv'
+    data.decoder_epoch = "1000"
+    
     
     data.enc_mean = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
     data.enc_std = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"

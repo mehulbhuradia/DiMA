@@ -6,6 +6,8 @@ from dataset import ProtienStructuresDataset
 # Initialize your dataset
 dataset = ProtienStructuresDataset()
 
+print(len(dataset))
+
 # Initialize a DataLoader
 batch_size = 4  # Set your desired batch size
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
