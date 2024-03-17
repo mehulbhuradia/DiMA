@@ -24,7 +24,7 @@ module load cuda/12.2 cudnn/12-8.9.1.23 miniconda/3.10
 cd /tudelft.net/staff-umbrella/Mehul/DiMA
 
 <!-- download log files -->
-scp -r daic:/tudelft.net/staff-umbrella/Mehul/DiMA/checkpoints/ ./
+scp -r daic:/tudelft.net/staff-umbrella/Mehul/DiMA/checkpoints/decoder-esm2-150M-uniprot_500--1000.pth ./
 scp -r daic:/tudelft.net/staff-umbrella/Mehul/DiMA/data/ ./
 
 <!-- cuz limited space -->

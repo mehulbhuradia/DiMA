@@ -50,7 +50,7 @@ def get_loaders(config, batch_size):
 
 
 def loss_step(X, encoder, decoder, eval=False):
-    with torch.no_grad(), torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+    with torch.no_grad(), torch.autocast(device_type='cuda', dtype=torch.float16):
         latent, tokenized_X = encoder.batch_encode(X)
 
     if not eval:
@@ -59,7 +59,7 @@ def loss_step(X, encoder, decoder, eval=False):
         latent = latent + eps
     
     targets = tokenized_X["input_ids"]
-    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+    with torch.autocast(device_type='cuda', dtype=torch.float16):
         logits = decoder(latent)
     loss = reconstruction_loss(targets, logits, mask=None)
     

@@ -21,6 +21,7 @@ from encoders import EncNormalizer, ESM2EncoderModel
 from utils import dict_to_cuda, reduce_tensor, masked_mean, masked_std, make_mask_wo_SEP_CLS, set_seed, gather_texts, load_fasta_file
 from evaluation import calculate_fid_for_files
 from diffusion_utils import LengthSampler
+from dataset import ProtienStructuresDataset
 
 
 class DiffusionRunner:
@@ -71,9 +72,13 @@ class DiffusionRunner:
             self.restore_parameters(self.device)
             self.switch_to_ema()
             self.score_estimator.eval()
+        
+        dataset = ProtienStructuresDataset(smiles_path=config.data.smiles_path, csv_file=config.data.csv_file, max_len=config.data.max_sequence_len, min_len=config.data.min_sequence_len)
+        # Split the dataset into train and test
+        train_size = int(0.9 * len(dataset))
+        test_size = len(dataset) - train_size
+        self.train_dataset, self.valid_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-        self.train_dataset = None
-        self.valid_dataset = None
         self.length_sampler = LengthSampler(path=self.config.data.test_dataset_path, max_len=self.config.data.max_sequence_len - 2)
         
         if not eval:
@@ -139,9 +144,7 @@ class DiffusionRunner:
         self.train_loader = DataLoader(
             self.train_dataset,
             sampler=sampler_train,
-            batch_size=self.config.training.batch_size_per_gpu,
-            num_workers=2,
-            pin_memory=False,
+            batch_size=self.config.training.batch_size_per_gpu
         )
 
     def set_valid_data_generator(self) -> None:
@@ -154,9 +157,7 @@ class DiffusionRunner:
         self.valid_loader = DataLoader(
             self.valid_dataset,
             sampler=sampler_valid,
-            batch_size=self.config.validation.batch_size,
-            num_workers=2,
-            pin_memory=False,
+            batch_size=self.config.validation.batch_size
         )
 
     def log_metric(self, metric_name: str, loader_name: str, value: Union[float, torch.Tensor, wandb.Image]):
@@ -287,7 +288,7 @@ class DiffusionRunner:
         # self-cond estimate
         x_0_self_cond = torch.zeros_like(x_t, dtype=x_t.dtype)
         if self.use_self_cond and random() < 0.5:
-            with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+            with torch.autocast(device_type='cuda', dtype=torch.float16):
                 x_0_self_cond = self.score_estimator(
                     x_t=x_t, time_t=t,
                     attention_mask=mask,
@@ -295,7 +296,7 @@ class DiffusionRunner:
                 ).detach()
 
         # model prediction
-        with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+        with torch.autocast(device_type='cuda', dtype=torch.float16):
             scores = self.calc_score(
                 self.score_estimator,
                 x_t, t,
@@ -375,7 +376,7 @@ class DiffusionRunner:
                 return
             _ = next(self.train_range_iter)
 
-            loss_dict, stat_dict = self.train_step(X)
+            loss_dict, stat_dict = self.train_step(X[0])
 
             if self.step % self.config.training.checkpoint_freq == 0:
                 self.save_checkpoint()
@@ -429,7 +430,7 @@ class DiffusionRunner:
             for X in self.valid_loader:
                 torch.cuda.empty_cache()
                 X = dict_to_cuda(X)
-                clean_X, tokenized_X = self.encoder_decoder.batch_encode(X)
+                clean_X, tokenized_X = self.encoder_decoder.batch_encode(X[0])
 
                 loss_dict, _ = self.calc_loss(clean_x=clean_X, X=tokenized_X)
                 for k, v in loss_dict.items():
