@@ -16,6 +16,7 @@ scp -r uniprot_sprot.fasta daic:/tudelft.net/staff-umbrella/Mehul/Enzymix/
 
 scp -r data/uniprot daic:/tudelft.net/staff-umbrella/Mehul/DiMA/data/
 scp -r data/uniprot_trim daic:/tudelft.net/staff-umbrella/Mehul/DiMA/data/
+scp -r ESP daic:/tudelft.net/staff-umbrella/Mehul/DiMA/
 
 #setup
 module use /opt/insy/modulefiles
