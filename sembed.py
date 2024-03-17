@@ -16,7 +16,7 @@ def get_last_layer_repr(smiles):
 
     tokens = tokenizer(
             smiles, 
-            max_length=330, 
+            max_length=408, 
             padding='max_length', 
             truncation=True, 
             return_tensors="pt")
@@ -30,7 +30,7 @@ def get_last_layer_repr(smiles):
 # Load dataset csv file
 
 
-csv_file = "./ESP/esp_phylo.csv"
+csv_file = "./ESP/esp_phylo_all.csv"
 
 # Read CSV file into a DataFrame
 df = pd.read_csv(csv_file)

@@ -47,12 +47,17 @@ print("Dataset 2:", len(all_entries_df_2))
 # print("Dataset 2:", all_entries_df_2['Protein sequence'].str.len().max())
 
 
-# Filter where 'Protein sequence' column length is between 128 and 254
-filtered_df_1 = all_entries_df_1[(all_entries_df_1['Protein sequence'].str.len() >= 128) & 
-                             (all_entries_df_1['Protein sequence'].str.len() <= 254)]
+# Filter where 'SMILES' column length is more than 510
+filtered_df_1 = all_entries_df_1[all_entries_df_1['SMILES'].str.len() <= 510]
+filtered_df_2 = all_entries_df_2[all_entries_df_2['SMILES'].str.len() <= 510]
 
-filtered_df_2 = all_entries_df_2[(all_entries_df_2['Protein sequence'].str.len() >= 128) & 
-                             (all_entries_df_2['Protein sequence'].str.len() <= 254)]
+
+# Filter where 'Protein sequence' column length is between 128 and 254
+# filtered_df_1 = all_entries_df_1[(all_entries_df_1['Protein sequence'].str.len() >= 128) & 
+#                              (all_entries_df_1['Protein sequence'].str.len() <= 254)]
+
+# filtered_df_2 = all_entries_df_2[(all_entries_df_2['Protein sequence'].str.len() >= 128) & 
+#                              (all_entries_df_2['Protein sequence'].str.len() <= 254)]
 
 
 # # Print max length of 'SMILES' before filtering
@@ -65,9 +70,9 @@ print("Dataset 2:", filtered_df_2['SMILES'].str.len().max())
 filtered_df_1 = filtered_df_1.drop(columns=['molecule ID', 'output'])
 filtered_df_2 = filtered_df_2.drop(columns=['molecule ID', 'output'])
 
-# # Save filtered DataFrames to CSV files
-# filtered_df_1.to_csv('esp.csv', index=False)
-# filtered_df_2.to_csv('esp_phylo.csv', index=False)
+# Save filtered DataFrames to CSV files
+filtered_df_1.to_csv('./ESP/esp_all.csv', index=False)
+filtered_df_2.to_csv('./ESP/esp_phylo_all.csv', index=False)
 
 # Number of entries before filtering for length:
 # Dataset 1: 18146
