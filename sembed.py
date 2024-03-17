@@ -28,8 +28,6 @@ def get_last_layer_repr(smiles):
 
 
 # Load dataset csv file
-
-
 csv_file = "./ESP/esp_phylo_all.csv"
 
 # Read CSV file into a DataFrame
