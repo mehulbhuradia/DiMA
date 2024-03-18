@@ -1,5 +1,6 @@
 import os
 import torch
+from dataset import ProtienStructuresDataset
 import wandb
 from tqdm import tqdm
 from torch.nn.functional import cross_entropy
@@ -28,22 +29,22 @@ def reconstruction_loss(target, prediction_scores, mask):
 
 
 def get_loaders(config, batch_size):
-    train_dataset = load_fasta_file(config.data.train_dataset_path)
+    
+    dataset = ProtienStructuresDataset(smiles_path=config.data.smiles_path, csv_file=config.data.csv_file, max_len=config.data.max_sequence_len, min_len=config.data.min_sequence_len)
+    
+    # Split the dataset into train and test
+    train_size = int(0.9 * len(dataset))
+    test_size = len(dataset) - train_size
+    train_dataset, valid_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
     train_loader = DataLoader(
         train_dataset,
-        batch_size=batch_size,
-        num_workers=20,
-        pin_memory=True,
+        batch_size=batch_size
     )
-
-    valid_dataset = load_fasta_file(config.data.test_dataset_path)
 
     valid_loader = DataLoader(
         valid_dataset,
-        batch_size=batch_size,
-        num_workers=20,
-        pin_memory=True,
+        batch_size=batch_size
     )
 
     return train_loader, valid_loader

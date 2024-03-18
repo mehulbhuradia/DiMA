@@ -4,18 +4,17 @@ from tqdm import tqdm
 from torch.utils.data import DataLoader
 
 from config import create_config
+from dataset import ProtienStructuresDataset
 from encoders import ESM2EncoderModel
 from utils import load_fasta_file
 
 
 def get_loader(config,  batch_size):
-    train_dataset = load_fasta_file(config.data.train_dataset_path)
+    train_dataset = ProtienStructuresDataset(smiles_path=config.data.smiles_path, csv_file=config.data.csv_file, max_len=config.data.max_sequence_len, min_len=config.data.min_sequence_len)
 
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
-        num_workers=20,
-        pin_memory=True,
     )
     return train_loader
 

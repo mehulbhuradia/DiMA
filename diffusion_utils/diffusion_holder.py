@@ -135,8 +135,6 @@ class DiffusionRunner:
         self.grad_scaler = GradScaler()
 
     def set_train_data_generator(self) -> None:
-        if self.train_dataset is None:
-            self.train_dataset = load_fasta_file(self.config.data.train_dataset_path)
         print("Train dataset length:", len(self.train_dataset))
 
         sampler_train = None
@@ -148,8 +146,6 @@ class DiffusionRunner:
         )
 
     def set_valid_data_generator(self) -> None:
-        if self.valid_dataset is None:
-            self.valid_dataset = load_fasta_file(self.config.data.test_dataset_path)
         print("Valid dataset length:", len(self.valid_dataset))
 
         sampler_valid = None
