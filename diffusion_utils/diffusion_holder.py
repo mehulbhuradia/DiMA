@@ -86,7 +86,8 @@ class DiffusionRunner:
                 project=self.config.project_name,
                 name=self.config.checkpoints_prefix,
                 config=dict(self.config),
-                mode="online"
+                mode="online",
+                # dir="/tmp/mbhuradia/wandb",
             )
 
     def restore_parameters(self, device: Optional[torch.device] = None) -> None:
