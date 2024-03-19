@@ -50,7 +50,8 @@ def get_loaders(config, batch_size):
     return train_loader, valid_loader
 
 
-def loss_step(X, encoder, decoder, eval=False):
+def loss_step(input, encoder, decoder, eval=False):
+    X = input[0]
     with torch.no_grad(), torch.autocast(device_type='cuda', dtype=torch.bfloat16):
         latent, tokenized_X = encoder.batch_encode(X)
 

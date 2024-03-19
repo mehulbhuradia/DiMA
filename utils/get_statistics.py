@@ -36,9 +36,9 @@ def compute_mean_std(
     )
     T = tqdm(train_loader)
 
-    for i, X in enumerate(T):
+    for i, input in enumerate(T):
         with torch.no_grad():
-            output, _ = encoder.batch_encode(X)
+            output, _ = encoder.batch_encode(input[0])
 
         cur_sum = torch.sum(output, dim=[0, 1])
         cur_sqr_sum = torch.sum(output ** 2, dim=[0, 1])
