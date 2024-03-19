@@ -374,7 +374,7 @@ class DiffusionRunner:
                 return
             _ = next(self.train_range_iter)
 
-            loss_dict, stat_dict = self.train_step(X[0],context=X[1])
+            loss_dict, stat_dict = self.train_step(X)
 
             if self.step % self.config.training.checkpoint_freq == 0:
                 self.save_checkpoint()
@@ -390,9 +390,10 @@ class DiffusionRunner:
                 f"grad_norm: {stat_dict['grad_norm'].item():0.4f}, "
             )
 
-    def train_step(self, X, context):
+    def train_step(self, X):
         self.step += 1
-        X = dict_to_cuda(X)
+        context = X[1]
+        X = dict_to_cuda(X[0])
         context.cuda()
         with torch.no_grad():
             clean_X, tokenized_X = self.encoder_decoder.batch_encode(X)
@@ -428,10 +429,9 @@ class DiffusionRunner:
         with torch.no_grad():
             for X in self.valid_loader:
                 torch.cuda.empty_cache()
-                X = dict_to_cuda(X)
                 context = X[1]
+                X = dict_to_cuda(X)
                 context.cuda()
-                print(context.device)
                 clean_X, tokenized_X = self.encoder_decoder.batch_encode(X[0])
 
                 loss_dict, _ = self.calc_loss(clean_x=clean_X, X=tokenized_X,context=context)
