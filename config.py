@@ -2,7 +2,7 @@ import ml_collections
 from transformers import BertConfig
 
 # 320 for 8M, 640 for 150M
-model_size = 640
+model_size = 320
 
 def create_config():
     config = ml_collections.ConfigDict()
@@ -20,7 +20,7 @@ def create_config():
     training = config.training = ml_collections.ConfigDict()
     training.training_iters = 1_000_000
     training.checkpoint_freq = 1_000
-    training.eval_freq = 100_000
+    training.eval_freq = 10_000
     training.batch_size = 32
 
     training.ode_sampling = False
@@ -72,7 +72,7 @@ def create_config():
     data.dataset = "uniprot_500"
     
     data.test_dataset_path = f'./data/{data.dataset}/uniprot_500-valid.fasta'
-    data.decoder_epoch = "3000"
+    data.decoder_epoch = "4000"
     
     
     data.enc_mean = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
