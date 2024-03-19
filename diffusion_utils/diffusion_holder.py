@@ -394,7 +394,7 @@ class DiffusionRunner:
         self.step += 1
         context = X[1]
         X = dict_to_cuda(X[0])
-        context.cuda()
+        context=context.cuda()
         with torch.no_grad():
             clean_X, tokenized_X = self.encoder_decoder.batch_encode(X)
         loss_dict, stat_dict = self.calc_loss(clean_x=clean_X, X=tokenized_X,context=context)
@@ -431,7 +431,7 @@ class DiffusionRunner:
                 torch.cuda.empty_cache()
                 context = X[1]
                 X = dict_to_cuda(X)
-                context.cuda()
+                context=context.cuda()
                 clean_X, tokenized_X = self.encoder_decoder.batch_encode(X[0])
 
                 loss_dict, _ = self.calc_loss(clean_x=clean_X, X=tokenized_X,context=context)
