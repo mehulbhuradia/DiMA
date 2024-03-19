@@ -84,7 +84,9 @@ class TransformerEncoder(torch.nn.Module):
             attention_mask: Optional[torch.FloatTensor] = None,
             emb_t=None,
             x_0_self_cond=None,
+            context=None,
     ):
+        print(context.shape)
         x_input_list = []
 
         for i, block in enumerate(self.input_blocks):
@@ -156,6 +158,7 @@ class ScoreEstimatorEMB(nn.Module):
             time_t: Optional[torch.Tensor] = None,
             attention_mask=None,
             x_0_self_cond=None,
+            context=None,
     ):
         assert time_t is not None
 
@@ -181,6 +184,7 @@ class ScoreEstimatorEMB(nn.Module):
             attention_mask=attention_mask,
             emb_t=hidden_t,
             x_0_self_cond=x_0_self_cond,
+            context=context
         )
 
         return output

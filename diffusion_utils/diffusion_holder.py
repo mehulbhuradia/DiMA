@@ -253,9 +253,9 @@ class DiffusionRunner:
         return torch.mean(mean), torch.mean(std), norm
     
 
-    def calc_score(self, model, x_t, t, mask=None, x_0_self_cond=None) -> Dict[str, torch.Tensor]:
+    def calc_score(self, model, x_t, t, mask=None, x_0_self_cond=None, context = None) -> Dict[str, torch.Tensor]:
         params = self.sde.marginal_params_tensor(x_t, t)
-        x_0 = model(x_t=x_t, time_t=t, attention_mask=mask, x_0_self_cond=x_0_self_cond)
+        x_0 = model(x_t=x_t, time_t=t, attention_mask=mask, x_0_self_cond=x_0_self_cond, context=context)
         eps_theta = (x_t - params["alpha"] * x_0) / params["std"]
         score = -eps_theta / params["std"]
 
@@ -271,6 +271,7 @@ class DiffusionRunner:
             clean_x,
             X=None,
             eps: float = 1e-5,
+            context=None,
     ) -> Dict[str, torch.Tensor]:
         mask = X["attention_mask"]
 
@@ -288,7 +289,7 @@ class DiffusionRunner:
                 x_0_self_cond = self.score_estimator(
                     x_t=x_t, time_t=t,
                     attention_mask=mask,
-                    x_0_self_cond=x_0_self_cond
+                    x_0_self_cond=x_0_self_cond, context=context
                 ).detach()
 
         # model prediction
@@ -298,6 +299,7 @@ class DiffusionRunner:
                 x_t, t,
                 mask=mask,
                 x_0_self_cond=x_0_self_cond,
+                context=context,
             )
 
         # MSE losses
@@ -372,7 +374,7 @@ class DiffusionRunner:
                 return
             _ = next(self.train_range_iter)
 
-            loss_dict, stat_dict = self.train_step(X[0])
+            loss_dict, stat_dict = self.train_step(X[0],context=X[1])
 
             if self.step % self.config.training.checkpoint_freq == 0:
                 self.save_checkpoint()
@@ -388,12 +390,12 @@ class DiffusionRunner:
                 f"grad_norm: {stat_dict['grad_norm'].item():0.4f}, "
             )
 
-    def train_step(self, X):
+    def train_step(self, X, context):
         self.step += 1
         X = dict_to_cuda(X)
         with torch.no_grad():
             clean_X, tokenized_X = self.encoder_decoder.batch_encode(X)
-        loss_dict, stat_dict = self.calc_loss(clean_x=clean_X, X=tokenized_X)
+        loss_dict, stat_dict = self.calc_loss(clean_x=clean_X, X=tokenized_X,context=context)
 
         stat_dict["grad_norm"], stat_dict["clipped_grad_norm"] = self.optimizer_step(loss_dict['total_loss'])
 
@@ -428,7 +430,7 @@ class DiffusionRunner:
                 X = dict_to_cuda(X)
                 clean_X, tokenized_X = self.encoder_decoder.batch_encode(X[0])
 
-                loss_dict, _ = self.calc_loss(clean_x=clean_X, X=tokenized_X)
+                loss_dict, _ = self.calc_loss(clean_x=clean_X, X=tokenized_X,context=X[1])
                 for k, v in loss_dict.items():
                     if k in valid_loss:
                         valid_loss[k] += v.item() * clean_X.size(0)
