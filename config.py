@@ -1,13 +1,11 @@
 import ml_collections
 from transformers import BertConfig
-import torch
 
 # 320 for 8M, 640 for 150M
 model_size = 320
 
 def create_config():
     config = ml_collections.ConfigDict()
-    config.device = "cuda" if torch.cuda.is_available() else "cpu"
     optim = config.optim = ml_collections.ConfigDict()
     optim.grad_clip_norm = 1.
     optim.linear_warmup = 1_000
