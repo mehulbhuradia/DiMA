@@ -104,7 +104,7 @@ def train(config, encoder, decoder, exp_name):
 
         for X in tqdm(train_loader):
             loss, acc = loss_step(
-                X=X,
+                input=X,
                 encoder=encoder,
                 decoder=decoder
             )
@@ -127,7 +127,7 @@ def train(config, encoder, decoder, exp_name):
                 for X in tqdm(valid_loader):
                     with torch.no_grad():
                         loss, acc = loss_step(
-                            X=X,
+                            input=X,
                             encoder=encoder,
                             decoder=decoder,
                             eval=True
