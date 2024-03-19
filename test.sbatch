@@ -12,7 +12,7 @@
 module use /opt/insy/modulefiles
 module load cuda/12.2 cudnn/12-8.9.1.23 miniconda/3.10
 
-conda activate /tudelft.net/staff-umbrella/Mehul/DiMA/dima
+conda activate /tudelft.net/staff-umbrella/Enzymix/DiMA/dima
 
 export HF_HOME=/tmp/mbhuradia/
 
