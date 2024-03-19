@@ -12,4 +12,5 @@ bfloat has same precision as f32 but i use f16 for speed
 
 bfloat works on a40
 
-9792105 to test val
+the 150M parameter ESM-2 model performs comparably with the 650M
+parameter ESM-1b model.

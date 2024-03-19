@@ -72,7 +72,7 @@ def create_config():
     data.dataset = "uniprot_500"
     
     data.test_dataset_path = f'./data/{data.dataset}/uniprot_500-valid.fasta'
-    data.decoder_epoch = "1000"
+    data.decoder_epoch = "3000"
     
     
     data.enc_mean = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
