@@ -2,7 +2,7 @@
 #SBATCH --partition=general
 #SBATCH --job-name=test_dima
 #SBATCH --qos=short         
-#SBATCH --time=00:50:00      
+#SBATCH --time=04:00:00      
 #SBATCH --ntasks=1         
 #SBATCH --cpus-per-task=2   
 #SBATCH --mem-per-cpu=100G
