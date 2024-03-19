@@ -92,7 +92,7 @@ class TransformerEncoder(torch.nn.Module):
             context=None,
     ):
         # TODO: FIX the device issue in the outer function
-        context.to(x.device)
+        context.cuda()
         print(x.device, context.device)
         x_input_list = []
 
