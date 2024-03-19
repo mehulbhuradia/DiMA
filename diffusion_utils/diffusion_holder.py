@@ -466,7 +466,7 @@ class DiffusionRunner:
         if last:
             prefix = prefix + 'last_'
         else:
-            prefix = prefix + str(self.step) + '_'
+            prefix = prefix
 
         torch.save(
             {   
