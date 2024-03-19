@@ -2,7 +2,7 @@ import ml_collections
 from transformers import BertConfig
 
 # 320 for 8M, 640 for 150M
-model_size = 320
+model_size = 640
 
 def create_config():
     config = ml_collections.ConfigDict()
@@ -19,7 +19,7 @@ def create_config():
 
     training = config.training = ml_collections.ConfigDict()
     training.training_iters = 1_000_000
-    training.checkpoint_freq = 20_000
+    training.checkpoint_freq = 1_000
     training.eval_freq = 100_000
     training.batch_size = 32
 
