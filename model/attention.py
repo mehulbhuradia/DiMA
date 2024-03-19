@@ -34,8 +34,14 @@ class FeedForward(nn.Module):
 
 
 class HalfTransformerBlock(nn.Module):
-    def __init__(self, dim, context_dim, n_heads, gated_ff=True):
+    def __init__(self, config):
         super().__init__()
+        
+        dim=config.hidden_size
+        context_dim=config.cross_context_dim
+        n_heads=config.num_attention_heads
+        gated_ff=config.cross_gated_ff
+        
         self.ff = FeedForward(dim, glu=gated_ff)
         self.attn = torch.nn.MultiheadAttention(embed_dim=dim, num_heads=n_heads, kdim=context_dim, vdim=context_dim, batch_first=True)
         self.norm1 = nn.LayerNorm(dim)

@@ -6,6 +6,7 @@ from typing import List, Optional, Tuple, Union
 from transformers.models.bert.modeling_bert import BertAttention, BertIntermediate, BertOutput, \
     apply_chunking_to_forward
 
+from model.attention import HalfTransformerBlock
 
 
 
@@ -77,6 +78,10 @@ class TransformerEncoder(torch.nn.Module):
         self.self_cond_layers = torch.nn.ModuleList(
             [nn.Linear(self.hidden_size, self.hidden_size) for _ in range(0, self.num_hidden_layers)]
         )
+        self.cross_cond_blocks = torch.nn.ModuleList(
+            [HalfTransformerBlock(config) for _ in range(0, self.num_hidden_layers)]
+        )
+
 
     def forward(
             self,
@@ -86,7 +91,6 @@ class TransformerEncoder(torch.nn.Module):
             x_0_self_cond=None,
             context=None,
     ):
-        print(context.shape)
         x_input_list = []
 
         for i, block in enumerate(self.input_blocks):
@@ -96,6 +100,7 @@ class TransformerEncoder(torch.nn.Module):
                 hidden_states=x,
                 attention_mask=attention_mask
             )
+            x = self.cross_cond_blocks[i](x, context)
 
         for i, block in enumerate(self.output_blocks):
             ind = i + self.num_hidden_layers // 2
@@ -104,6 +109,7 @@ class TransformerEncoder(torch.nn.Module):
                 hidden_states=x,
                 attention_mask=attention_mask
             )
+            x = self.cross_cond_blocks[ind](x, context)
 
         return x
 

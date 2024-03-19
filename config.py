@@ -106,4 +106,6 @@ bert_config = BertConfig(**{
     "position_embedding_type": "absolute",
     "transformers_version": "4.6.0.dev0",
     "is_decoder": False,
+    "cross_context_dim": 600,
+    "cross_gated_ff": True,
 })
