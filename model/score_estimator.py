@@ -91,7 +91,8 @@ class TransformerEncoder(torch.nn.Module):
             x_0_self_cond=None,
             context=None,
     ):
-        print(x.device, context.device, emb_t.device, x_0_self_cond.device)
+        # TODO: FIX the device issue in the outer function
+        context.to(x.device)
         x_input_list = []
 
         for i, block in enumerate(self.input_blocks):
