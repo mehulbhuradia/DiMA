@@ -429,10 +429,12 @@ class DiffusionRunner:
             for X in self.valid_loader:
                 torch.cuda.empty_cache()
                 X = dict_to_cuda(X)
-                X[1].cuda()
+                context = X[1]
+                context.cuda()
+                print(context.device)
                 clean_X, tokenized_X = self.encoder_decoder.batch_encode(X[0])
 
-                loss_dict, _ = self.calc_loss(clean_x=clean_X, X=tokenized_X,context=X[1])
+                loss_dict, _ = self.calc_loss(clean_x=clean_X, X=tokenized_X,context=context)
                 for k, v in loss_dict.items():
                     if k in valid_loss:
                         valid_loss[k] += v.item() * clean_X.size(0)
