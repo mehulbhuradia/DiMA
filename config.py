@@ -1,6 +1,9 @@
 import ml_collections
 from transformers import BertConfig
 
+# 320 for 8M, 640 for 150M
+model_size = 320
+
 def create_config():
     config = ml_collections.ConfigDict()
     optim = config.optim = ml_collections.ConfigDict()
@@ -53,9 +56,13 @@ def create_config():
     # model.hidden_size = 640
     # model.hg_name = "facebook/esm2_t30_150M_UR50D"
     # model.hg_name_hash = "esm2-150M"
-    model.hidden_size = 320
-    model.hg_name = "facebook/esm2_t6_8M_UR50D"
-    model.hg_name_hash = "esm2-8M"
+    model.hidden_size = model_size
+    if model.hidden_size == 640:
+        model.hg_name = "facebook/esm2_t30_150M_UR50D"
+        model.hg_name_hash = "esm2-150M"
+    else:
+        model.hg_name = "facebook/esm2_t6_8M_UR50D"
+        model.hg_name_hash = "esm2-8M"
 
     data = config.data = ml_collections.ConfigDict()
     data.max_sequence_len = 500
@@ -82,8 +89,7 @@ def create_config():
 
 
 bert_config = BertConfig(**{
-    # "hidden_size": 640,
-    "hidden_size": 320,
+    "hidden_size": model_size,
     "hidden_act": "gelu",
     "initializer_range": 0.02,
     "vocab_size": 30522,
