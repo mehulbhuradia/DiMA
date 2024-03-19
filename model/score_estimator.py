@@ -91,9 +91,6 @@ class TransformerEncoder(torch.nn.Module):
             x_0_self_cond=None,
             context=None,
     ):
-        # TODO: FIX the device issue in the outer function
-        context.cuda()
-        print(x.device, context.device)
         x_input_list = []
 
         for i, block in enumerate(self.input_blocks):

@@ -21,7 +21,7 @@ def create_config():
     training.training_iters = 1_000_000
     training.checkpoint_freq = 20
     training.eval_freq = 100_000
-    training.batch_size = 64
+    training.batch_size = 32
 
     training.ode_sampling = False
     training.checkpoints_folder = './checkpoints/'
