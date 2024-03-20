@@ -573,7 +573,7 @@ class DiffusionRunner:
         json.dump(result, open(file_name, "w"), indent=4)
         print(file_name)
 
-        fid_value = calculate_fid_for_files(list(self.valid_dataset.dataset.keys()), file_name)
+        fid_value = calculate_fid_for_files([t[0] for t in self.valid_dataset], file_name)
         print(f"FID: {fid_value:0.5f}")
 
         if not eval:

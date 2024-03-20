@@ -26,13 +26,19 @@ train_size = int(0.99 * len(dataset))
 test_size = len(dataset) - train_size
 train_dataset, valid_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-lensampler = CustomLengthSampler(valid_dataset, max_len=500)
+val_seqs = [t[0] for t in valid_dataset]
 
-# lens, contexts = lensampler.sample(10)
+print(val_seqs)
 
-# print(type(contexts))
-# print(contexts.shape)
+# print(valid_dataset[0])
 
-print(lensampler.sample(1))
-print(lensampler.sample(1))
-print(lensampler.sample(1))
+# lensampler = CustomLengthSampler(valid_dataset, max_len=500)
+
+# # lens, contexts = lensampler.sample(10)
+
+# # print(type(contexts))
+# # print(contexts.shape)
+
+# print(lensampler.sample(1))
+# print(lensampler.sample(1))
+# print(lensampler.sample(1))
