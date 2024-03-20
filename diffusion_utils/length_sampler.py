@@ -1,6 +1,7 @@
 import numpy as np
 from collections import Counter
 from utils.preprocessing import load_fasta_file
+import torch
 
 class LengthSampler:
     def __init__(self, path, max_len=254):
@@ -38,4 +39,5 @@ class CustomLengthSampler:
         context_list = []
         for context in c:
             context_list.append(self.dataset_contexts[context])
-        return s, context_list
+        context_tensor = torch.stack(context_list, dim=0)
+        return s, context_tensor

@@ -1,1 +1,1 @@
-from .length_sampler import LengthSampler
+from .length_sampler import LengthSampler, CustomLengthSampler

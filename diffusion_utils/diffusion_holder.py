@@ -1,6 +1,7 @@
 import os
 import json
 import torch
+from diffusion_utils import CustomLengthSampler
 import wandb
 import numpy as np
 from copy import deepcopy
@@ -20,7 +21,6 @@ from diffusion_utils.diffusion_dynamic_sde import create_sde, create_solver
 from encoders import EncNormalizer, ESM2EncoderModel
 from utils import dict_to_cuda, reduce_tensor, masked_mean, masked_std, make_mask_wo_SEP_CLS, set_seed, gather_texts, load_fasta_file
 from evaluation import calculate_fid_for_files
-from diffusion_utils import LengthSampler
 from dataset import ProtienStructuresDataset
 
 
@@ -79,7 +79,7 @@ class DiffusionRunner:
         test_size = len(dataset) - train_size
         self.train_dataset, self.valid_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-        self.length_sampler = LengthSampler(self.valid_dataset, max_len=self.config.data.max_sequence_len - 2)
+        self.length_sampler = CustomLengthSampler(self.valid_dataset, max_len=self.config.data.max_sequence_len - 2)
         
         if not eval:
             wandb.init(
@@ -495,10 +495,14 @@ class DiffusionRunner:
         self.step = load["step"]
         print(f"Checkpoint refreshed {self.config.refresh.prefix}")
 
-    def generate_text(self, batch_size):
-        lens = self.length_sampler.sample(batch_size)
-        # TODO: Add context using a sampler
-        context =None
+    def generate_text(self, num_texts,batch_size=32):
+        outputs = []
+        for i in range(num_texts//batch_size):
+            outputs.extend(self.generate_text_batch(batch_size))
+        return outputs
+
+    def generate_text_batch(self, batch_size):
+        lens,contexts = self.length_sampler.sample(batch_size)
         attention_mask = torch.zeros((batch_size, self.config.data.max_sequence_len))
         for i in range(batch_size):
             for j in range(lens[i]):
@@ -507,7 +511,7 @@ class DiffusionRunner:
         attention_mask = attention_mask.cuda()
 
         with torch.no_grad():
-            pred_embeddings = self.pred_embeddings(batch_size, attention_mask, context=context)
+            pred_embeddings = self.pred_embeddings(batch_size, attention_mask, context=contexts)
             output = self.pred_logits(pred_embeddings, attention_mask)
         return output
 
@@ -556,7 +560,7 @@ class DiffusionRunner:
 
         seed = self.config.seed
         set_seed(seed)
-        output = self.generate_text(batch_size=num_texts)
+        output = self.generate_text(num_texts=num_texts, batch_size=self.config.validation.batch_size)
 
         result = [{"protein": p} for p in output]
 

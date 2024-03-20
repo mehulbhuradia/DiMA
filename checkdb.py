@@ -22,9 +22,13 @@ from diffusion_utils.length_sampler import CustomLengthSampler
 import torch
 dataset = ProtienStructuresDataset()
 # Split the dataset into train and test
-train_size = int(0.9 * len(dataset))
+train_size = int(0.99 * len(dataset))
 test_size = len(dataset) - train_size
 train_dataset, valid_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
 lensampler = CustomLengthSampler(valid_dataset, max_len=500)
-print(lensampler.sample(10))
+
+lens, contexts = lensampler.sample(10)
+
+print(type(contexts))
+print(contexts.shape)
