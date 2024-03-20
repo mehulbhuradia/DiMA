@@ -79,7 +79,7 @@ class DiffusionRunner:
         test_size = len(dataset) - train_size
         self.train_dataset, self.valid_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-        self.length_sampler = LengthSampler(path=self.config.data.test_dataset_path, max_len=self.config.data.max_sequence_len - 2)
+        self.length_sampler = LengthSampler(self.valid_dataset, max_len=self.config.data.max_sequence_len - 2)
         
         if not eval:
             wandb.init(
@@ -497,6 +497,8 @@ class DiffusionRunner:
 
     def generate_text(self, batch_size):
         lens = self.length_sampler.sample(batch_size)
+        # TODO: Add context using a sampler
+        context =None
         attention_mask = torch.zeros((batch_size, self.config.data.max_sequence_len))
         for i in range(batch_size):
             for j in range(lens[i]):
@@ -505,7 +507,7 @@ class DiffusionRunner:
         attention_mask = attention_mask.cuda()
 
         with torch.no_grad():
-            pred_embeddings = self.pred_embeddings(batch_size, attention_mask)
+            pred_embeddings = self.pred_embeddings(batch_size, attention_mask, context=context)
             output = self.pred_logits(pred_embeddings, attention_mask)
         return output
 
@@ -517,6 +519,7 @@ class DiffusionRunner:
     def pred_embeddings(
             self, batch_size: int,
             attention_mask=None,
+            context=None
     ) -> torch.Tensor:
         shape = (
             batch_size,
@@ -536,7 +539,7 @@ class DiffusionRunner:
                     model=self.score_estimator,
                     x_t=x, t=vec_t,
                     mask=attention_mask,
-                    x_0_self_cond=x_0_self_cond,
+                    x_0_self_cond=x_0_self_cond,context=context
                 )
                 x, x_mean = output["x"], output["x_mean"]
                 x_0_self_cond = output["x_0"]

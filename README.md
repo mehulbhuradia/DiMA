@@ -42,3 +42,4 @@ torchrun --nproc_per_node=1 --master_port=31345  train_diffusion.py
 
 
 
+/tmp/wandb/run-20240320_022401-vqj28olh/logs

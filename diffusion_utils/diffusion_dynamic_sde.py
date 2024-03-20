@@ -103,7 +103,7 @@ class DDPM_SDE:
             def T(self):
                 return T
 
-            def sde(self, model, x_t, t, mask=None, x_0_self_cond=None) -> Dict[str, torch.Tensor]:
+            def sde(self, model, x_t, t, mask=None, x_0_self_cond=None,context=None) -> Dict[str, torch.Tensor]:
                 """Create the drift and diffusion functions for the reverse SDE/ODE.
                 SDE:
                     dx = (-1/2 * beta * x_t - beta * score) * dt + sqrt(beta) * dw
@@ -113,7 +113,7 @@ class DDPM_SDE:
                 sde_params = sde_cls.sde(x_t, t)
                 drift_par, diffusion = sde_params['drift'], sde_params['diffusion']  # -1/2 * beta * x_t, sqrt(beta)
 
-                scores = sde_cls.score_fn(model, x_t, t, mask=mask, x_0_self_cond=x_0_self_cond)
+                scores = sde_cls.score_fn(model, x_t, t, mask=mask, x_0_self_cond=x_0_self_cond,context=context)
                 score = scores['score']
                 drift = drift_par - diffusion[:, None, None] ** 2 * score * (0.5 if self.ode_sampling else 1.)
                 # Set the diffusion function to zero for ODEs.
@@ -135,10 +135,10 @@ class EulerDiffEqSolver:
         self.ode_sampling: bool = ode_sampling
         self.rsde = sde.reverse(ode_sampling)
 
-    def step(self, model, x_t, t, mask=None, x_0_self_cond=None) -> Dict[str, torch.Tensor]:
+    def step(self, model, x_t, t, mask=None, x_0_self_cond=None,context=None) -> Dict[str, torch.Tensor]:
         dt = -1. / self.rsde.N
         z = torch.randn_like(x_t)
-        rsde_params = self.rsde.sde(model, x_t, t, mask=mask, x_0_self_cond=x_0_self_cond)
+        rsde_params = self.rsde.sde(model, x_t, t, mask=mask, x_0_self_cond=x_0_self_cond,context=context)
         drift, diffusion = rsde_params['drift'], rsde_params['diffusion']
         x_mean = x_t + drift * dt
         if not self.ode_sampling:
