@@ -381,8 +381,8 @@ class DiffusionRunner:
                 self.save_checkpoint()
                 self.validate()
                 
-            if self.step % self.config.training.eval_freq == 0:
-                self.estimation(suffix=f"masked-sc-Euler")
+            # if self.step % self.config.training.eval_freq == 0:
+            #     self.estimation(suffix=f"masked-sc-Euler")
                 
 
             self.train_range.set_description(

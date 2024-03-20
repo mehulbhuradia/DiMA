@@ -18,6 +18,13 @@ scp -r data/uniprot daic:/tudelft.net/staff-umbrella/Mehul/DiMA/data/
 scp -r data/uniprot_trim daic:/tudelft.net/staff-umbrella/Mehul/DiMA/data/
 scp -r ESP daic:/tudelft.net/staff-umbrella/Mehul/DiMA/
 
+
+<!-- ENZYMIX FOLDER -->
+scp -r ESP daic:/tudelft.net/staff-umbrella/Enzymix/DiMA/
+scp -r data daic:/tudelft.net/staff-umbrella/Enzymix/DiMA/
+scp -r checkpoints daic:/tudelft.net/staff-umbrella/Enzymix/DiMA/
+
+
 #setup
 module use /opt/insy/modulefiles
 module load cuda/12.2 cudnn/12-8.9.1.23 miniconda/3.10

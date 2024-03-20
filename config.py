@@ -10,7 +10,7 @@ def create_config():
     optim.grad_clip_norm = 1.
     optim.linear_warmup = 1_000
     optim.lr = 2e-4
-    optim.min_lr = 2e-4
+    optim.min_lr = 1e-5
     optim.warmup_lr = 0.
     optim.weight_decay = 0.01
     optim.beta_1 = 0.9
@@ -18,7 +18,7 @@ def create_config():
     optim.eps = 1e-6
 
     training = config.training = ml_collections.ConfigDict()
-    training.training_iters = 1_000_000
+    training.training_iters = 120_000
     training.checkpoint_freq = 1_000
     training.eval_freq = 10_000
     training.batch_size = 32
