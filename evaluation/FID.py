@@ -128,14 +128,14 @@ def calculate_fid_for_a_pair(batch1, batch2):
     return fid_value
 
 def calculate_fid_for_files(input_file_1, input_file_2):
-    if input_file_1.endswith(".json"):
+    if input_file_1.isInstance(list):
+        seq_list_1 = input_file_1
+    elif input_file_1.endswith(".json"):
         seq_list_1 = read_json(input_file_1)
     elif input_file_1.endswith(".fasta") or input_file_1.endswith(".fa"):
         seq_list_1 = read_fasta(input_file_1)
-    elif input_file_1.isInstance(list):
-        seq_list_1 = input_file_1
     else:
-        raise ValueError("Input file must be JSON or FASTA")
+        raise ValueError("Input file must be JSON or FASTA or list of sequences")
     if input_file_2.endswith(".json"):
         seq_list_2 = read_json(input_file_2)
     elif input_file_2.endswith(".fasta") or input_file_2.endswith(".fa"):
