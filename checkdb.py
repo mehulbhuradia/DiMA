@@ -28,7 +28,11 @@ train_dataset, valid_dataset = torch.utils.data.random_split(dataset, [train_siz
 
 lensampler = CustomLengthSampler(valid_dataset, max_len=500)
 
-lens, contexts = lensampler.sample(10)
+# lens, contexts = lensampler.sample(10)
 
-print(type(contexts))
-print(contexts.shape)
+# print(type(contexts))
+# print(contexts.shape)
+
+print(lensampler.sample(1))
+print(lensampler.sample(1))
+print(lensampler.sample(1))

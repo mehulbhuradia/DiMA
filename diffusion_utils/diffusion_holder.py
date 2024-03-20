@@ -509,6 +509,7 @@ class DiffusionRunner:
                 attention_mask[i, j] = 1
 
         attention_mask = attention_mask.cuda()
+        contexts = contexts.cuda()
 
         with torch.no_grad():
             pred_embeddings = self.pred_embeddings(batch_size, attention_mask, context=contexts)
