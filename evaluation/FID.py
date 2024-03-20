@@ -128,7 +128,7 @@ def calculate_fid_for_a_pair(batch1, batch2):
     return fid_value
 
 def calculate_fid_for_files(input_file_1, input_file_2):
-    if input_file_1.isInstance(list):
+    if isinstance(input_file_1, list):
         seq_list_1 = input_file_1
     elif input_file_1.endswith(".json"):
         seq_list_1 = read_json(input_file_1)
