@@ -35,4 +35,7 @@ class CustomLengthSampler:
     def sample(self, num_samples):
         s = np.argmax(np.random.multinomial(1, self.distrib, size=(num_samples)), axis=1)
         c = np.argmax(np.random.multinomial(1, self.context_distrib, size=(num_samples)), axis=1)
-        return s, c
+        context_list = []
+        for context in c:
+            context_list.append(self.dataset_contexts[context])
+        return s, context_list
