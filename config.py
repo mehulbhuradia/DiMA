@@ -37,7 +37,7 @@ def create_config():
     validation = config.validation = ml_collections.ConfigDict()
     validation.batch_size = training.batch_size
     validation.validation_iters = int(10_000 / validation.batch_size)
-    validation.num_gen_texts = 2048
+    validation.num_gen_texts = 64
 
     sde = config.sde = ml_collections.ConfigDict()
     sde.typename = 'vp-sde'
@@ -71,7 +71,6 @@ def create_config():
     data.smiles_path = './ESP/smiles.pkl'
     data.dataset = "uniprot_500"
     
-    data.test_dataset_path = f'./data/{data.dataset}/uniprot_500-valid.fasta'
     data.decoder_epoch = "4000"
     
     
