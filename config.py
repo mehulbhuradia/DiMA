@@ -19,8 +19,8 @@ def create_config():
 
     training = config.training = ml_collections.ConfigDict()
     training.training_iters = 120_000
-    training.checkpoint_freq = 10
-    training.eval_freq = 10
+    training.checkpoint_freq = 1_000
+    training.eval_freq = 5_000
     training.batch_size = 32
 
     training.ode_sampling = False
@@ -37,7 +37,7 @@ def create_config():
     validation = config.validation = ml_collections.ConfigDict()
     validation.batch_size = training.batch_size
     validation.validation_iters = int(10_000 / validation.batch_size)
-    validation.num_gen_texts = 64
+    validation.num_gen_texts = 2048
 
     sde = config.sde = ml_collections.ConfigDict()
     sde.typename = 'vp-sde'

@@ -9,7 +9,7 @@ if __name__ == '__main__':
     config = create_config()
     timstamp = str(time.time()).replace(".","")
     config.training.checkpoints_folder = './checkpoints/'+ timstamp + '/'
-    config.checkpoints_prefix = "DiMA_CROSS"+timstamp+"_"+config.data.dataset+"_"+str(config.model.hidden_size)
+    config.checkpoints_prefix = "DiMA_CROSS_Eval"+timstamp+"_"+config.data.dataset+"_"+str(config.model.hidden_size)
     config.training.batch_size_per_gpu = config.training.batch_size 
     config.device = "cuda" if torch.cuda.is_available() else "cpu"
     config.project_name = 'proteins'
