@@ -37,3 +37,15 @@ scp -r daic:/tudelft.net/staff-umbrella/Mehul/DiMA/data/ ./
 
 <!-- cuz limited space -->
 conda config --add pkgs_dirs /tmp/
+
+
+runing jobs:  
+9847304   general dima_dif mbhuradi PD       0:00      1 (Priority)
+9847291   general dima_dif mbhuradi  R    1:42:49      1 gpu20
+9847287   general dima_dif mbhuradi  R    2:03:28      1 gpu02
+9847282   general dima_dif mbhuradi  R    2:33:09      1 gpu23
+9847303   general dima_dif mbhuradi  R       3:08      1 gpu15
+9847302   general dima_dif mbhuradi  R       5:08      1 gpu01
+9847300   general dima_dif mbhuradi  R      14:08      1 gpu07
+9847299   general dima_dif mbhuradi  R      16:08      1 gpu01
+9847290   general dima_dif mbhuradi  R    1:13:08      1 gpu04
