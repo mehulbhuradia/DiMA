@@ -16,18 +16,18 @@ class ProtienStructuresDataset(Dataset):
     protien_df = protien_df[(protien_df['Protein sequence'].str.len() >= min_len) &
             (protien_df['Protein sequence'].str.len() <= max_len)]
     
-    dataset = {}
-    count = 0
+    dataset = [[],[]]
     for idx, row in protien_df.iterrows():
       if row['SMILES'] in smiles_data:
-        dataset[row['Protein sequence']] = smiles_data[row['SMILES']]
+        dataset[0].append(row['Protein sequence'])
+        dataset[1].append(smiles_data[row['SMILES']])
     self.dataset = dataset
     
   def __len__(self):
     return len(self.dataset)
 
   def __getitem__(self, idx):
-    protien_seq = list(self.dataset.keys())[idx]
-    smiles = list(self.dataset.values())[idx]
+    protien_seq = self.dataset[0][idx]
+    smiles = self.dataset[1][idx]
     return protien_seq, smiles
     
