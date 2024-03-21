@@ -107,4 +107,5 @@ bert_config = BertConfig(**{
     "is_decoder": False,
     "cross_context_dim": 600,
     "cross_gated_ff": True,
+    "use_cross_attention_on_context": True,
 })

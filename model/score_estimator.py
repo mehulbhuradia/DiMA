@@ -78,9 +78,11 @@ class TransformerEncoder(torch.nn.Module):
         self.self_cond_layers = torch.nn.ModuleList(
             [nn.Linear(self.hidden_size, self.hidden_size) for _ in range(0, self.num_hidden_layers)]
         )
-        self.cross_cond_blocks = torch.nn.ModuleList(
-            [HalfTransformerBlock(config) for _ in range(0, self.num_hidden_layers)]
-        )
+        self.use_cross_attention_on_context = config.use_cross_attention_on_context
+        if self.use_cross_attention_on_context:
+            self.cross_cond_blocks = torch.nn.ModuleList(
+                [HalfTransformerBlock(config) for _ in range(0, self.num_hidden_layers)]
+            )
 
 
     def forward(
@@ -100,7 +102,8 @@ class TransformerEncoder(torch.nn.Module):
                 hidden_states=x,
                 attention_mask=attention_mask
             )
-            x = self.cross_cond_blocks[i](x, context)
+            if self.use_cross_attention_on_context:
+                x = self.cross_cond_blocks[i](x, context)
 
         for i, block in enumerate(self.output_blocks):
             ind = i + self.num_hidden_layers // 2
@@ -109,7 +112,8 @@ class TransformerEncoder(torch.nn.Module):
                 hidden_states=x,
                 attention_mask=attention_mask
             )
-            x = self.cross_cond_blocks[ind](x, context)
+            if self.use_cross_attention_on_context:
+                x = self.cross_cond_blocks[ind](x, context)
 
         return x
 
