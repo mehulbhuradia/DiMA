@@ -467,7 +467,12 @@ class DiffusionRunner:
             prefix = prefix + 'last_'
         else:
             prefix = prefix
-
+        prefix = prefix + 'model.pth'
+        
+        file_path = os.path.join(self.checkpoints_folder, prefix)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        
         torch.save(
             {   
                 "model": self.score_estimator.state_dict(),
@@ -476,9 +481,9 @@ class DiffusionRunner:
                 "scheduler": self.scheduler.state_dict(),
                 "step": self.step,
             },
-            os.path.join(self.checkpoints_folder, prefix + ".pth")
+            file_path
         )
-        print(f"Save model to: {os.path.join(self.checkpoints_folder, prefix + f'model.pth')}")
+        print(f"Save model to: {file_path}")
 
     def refresh_checkpoint(self):
         if not self.config.refresh.true:
