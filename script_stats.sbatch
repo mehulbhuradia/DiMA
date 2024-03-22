@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --partition=general
+#SBATCH --partition=general,insy
 #SBATCH --job-name=dima_stats
 #SBATCH --qos=medium         
 #SBATCH --time=36:00:00      

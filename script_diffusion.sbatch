@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --partition=general
+#SBATCH --partition=general,insy
 #SBATCH --job-name=dima_diffusion
 #SBATCH --qos=medium         
 #SBATCH --time=24:00:00      

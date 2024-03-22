@@ -73,7 +73,7 @@ class DiffusionRunner:
             self.switch_to_ema()
             self.score_estimator.eval()
         
-        dataset = ProtienStructuresDataset(smiles_path=config.data.smiles_path, csv_file=config.data.csv_file, max_len=config.data.max_sequence_len, min_len=config.data.min_sequence_len)
+        dataset = ProtienStructuresDataset(smiles_path=config.data.smiles_path, csv_file=config.data.csv_file, max_len=config.data.max_sequence_len, min_len=config.data.min_sequence_len,use_cross_attention_on_context=config.bert_config.use_cross_attention_on_context)
         # Split the dataset into train and test
         train_size = int(0.9 * len(dataset))
         test_size = len(dataset) - train_size
