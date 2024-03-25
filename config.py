@@ -42,9 +42,9 @@ def create_config():
     optim.eps = 1e-6
 
     training = config.training = ml_collections.ConfigDict()
-    training.training_iters = 50_000
-    training.checkpoint_freq = 5_000
-    training.eval_freq = 10_000
+    training.training_iters = training_iters
+    training.checkpoint_freq = checkpoint_freq
+    training.eval_freq = eval_freq
     training.batch_size = 32
 
     training.ode_sampling = False
