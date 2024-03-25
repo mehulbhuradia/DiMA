@@ -109,7 +109,7 @@ def create_config():
         data.decoder_epoch = "203000"
     elif data.dataset == "uniprot_trim":
         data.decoder_epoch = "53000"
-    elif data.datatset == "AFDB":
+    elif data.dataset == "AFDB":
         data.decoder_epoch = "340000"
     
     
