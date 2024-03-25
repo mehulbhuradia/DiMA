@@ -1,8 +1,8 @@
 #!/bin/sh
 #SBATCH --partition=general,insy
-#SBATCH --job-name=dima_diffusion
-#SBATCH --qos=infinite         
-#SBATCH --time=600:00:00      
+#SBATCH --job-name=dima_inf
+#SBATCH --qos=long         
+#SBATCH --time=168:00:00      
 #SBATCH --ntasks=1         
 #SBATCH --cpus-per-task=2   
 #SBATCH --mem-per-cpu=100G

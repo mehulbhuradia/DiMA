@@ -3,13 +3,37 @@ from transformers import BertConfig
 
 # 320 for 8M, 640 for 150M
 model_size = 320
+use_cross_attention_on_context = True
+training_iters = 500_000
+
+if use_cross_attention_on_context:
+    max_sequence_len = 500 # 256 or 500
+else:
+    max_sequence_len = 256
+
+
+if max_sequence_len == 500:
+    min_sequence_len = 50
+    dataset_path = './ESP/esp_phylo_all.csv'
+else:
+    min_sequence_len = 128
+    dataset_path = './data/AFDBv4_90.fasta'
+
+if use_cross_attention_on_context:
+    learning_rate = 5e-5
+    checkpoint_freq = 10_000
+    eval_freq = 25_000
+else:
+    learning_rate = 2e-4
+    checkpoint_freq = 100_000
+    eval_freq = 150_000
 
 def create_config():
     config = ml_collections.ConfigDict()
     optim = config.optim = ml_collections.ConfigDict()
     optim.grad_clip_norm = 1.
     optim.linear_warmup = 1_000
-    optim.lr = 5e-5
+    optim.lr = learning_rate
     optim.min_lr = 5e-6
     optim.warmup_lr = 0.
     optim.weight_decay = 0.01
@@ -65,13 +89,28 @@ def create_config():
         model.hg_name_hash = "esm2-8M"
 
     data = config.data = ml_collections.ConfigDict()
-    data.max_sequence_len = 500
-    data.min_sequence_len = 50
-    data.csv_file = './ESP/esp_phylo_all.csv'
+    data.max_sequence_len = max_sequence_len
+    data.min_sequence_len = min_sequence_len
+    
+    # Dataset Path
+    data.csv_file = dataset_path
+    
     data.smiles_path = './ESP/smiles.pkl'
     data.dataset = "uniprot_500"
+
+    if max_sequence_len == 500:
+        data.dataset = "uniprot_500"
+    elif max_sequence_len == 256:
+        data.dataset = "AFDB"
     
-    data.decoder_epoch = "4000"
+    if data.dataset == "uniprot_500":
+        data.decoder_epoch = "4000"
+    elif data.dataset == "uniprot":
+        data.decoder_epoch = "203000"
+    elif data.dataset == "uniprot_trim":
+        data.decoder_epoch = "53000"
+    elif data.datatset == "AFDB":
+        data.decoder_epoch = "340000"
     
     
     data.enc_mean = f"./data/{data.dataset}/encodings-{model.hg_name_hash}-mean.pt"
@@ -107,5 +146,5 @@ bert_config = BertConfig(**{
     "is_decoder": False,
     "cross_context_dim": 600,
     "cross_gated_ff": True,
-    "use_cross_attention_on_context": True,
+    "use_cross_attention_on_context": use_cross_attention_on_context,
 })

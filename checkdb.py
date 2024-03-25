@@ -20,10 +20,10 @@ from diffusion_utils.length_sampler import CustomLengthSampler
 #     print(s[0].shape, s[1].shape)
 #     break
 import torch
-dataset = ProtienStructuresDataset(use_cross_attention_on_context=True)
+dataset = ProtienStructuresDataset(use_cross_attention_on_context=False, csv_file='./data/AFDBv4_90.fasta')
 print(len(dataset))
-dataset = ProtienStructuresDataset(use_cross_attention_on_context=False)
-print(len(dataset))
+# dataset = ProtienStructuresDataset(use_cross_attention_on_context=False)
+# print(len(dataset))
 # Split the dataset into train and test
 # train_size = int(0.99 * len(dataset))
 # test_size = len(dataset) - train_size
