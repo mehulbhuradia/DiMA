@@ -4,7 +4,7 @@ from transformers import BertConfig
 # 320 for 8M, 640 for 150M
 model_size = 320
 use_cross_attention_on_context = True
-training_iters = 500_000
+training_iters = 1_000_000
 
 if use_cross_attention_on_context:
     max_sequence_len = 500 # 256 or 500

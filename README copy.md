@@ -40,3 +40,11 @@ conda config --add pkgs_dirs /tmp/
 
 
 saving checkpoints takes space even if i delete them
+
+
+
+cross: 9853329 DIMA/dima
+og_afdb: 9853508 Enzymix/dima (inf)
+og_afdb: 9853504 Enzymix/dima (long)
+
+L_eps og afdb Enzymix/dima (Nan or inf detected)
